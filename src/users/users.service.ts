@@ -12,7 +12,7 @@ import { ProfileDto } from 'src/dto/profile.dto';
 export class UsersService {
    constructor (
    @InjectModel (User.name) private userModel:Model<User>,
-   @InjectModel (User.name) private profileModel:Model<Profile>){}
+   @InjectModel (Profile.name) private profileModel:Model<Profile>){}
 
   async createProfile(payload: ProfileDto, _id:string) {
     try{
