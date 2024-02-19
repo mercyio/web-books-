@@ -1,7 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { SignupDto } from 'src/dto/signup.dto';
 import { User } from 'src/schema/user.schema';
+import * as bcrypt from 'bcrypt';
+
 
 
 @Injectable()
@@ -11,8 +14,18 @@ export class AuthService {
     // @InjectModel (User.name) private profileModel:Model<Profile>
     ){}
  
-  create() {
-    return 'This action adds a new auth';
+  async signup(payload:SignupDto ) {
+   payload.email = payload.email.toLowerCase()
+   const {email, password} =payload
+   const userEmail = await this.userModel.findOne({email})
+   if(userEmail){
+     throw new HttpException('EMAIL ALREADY EXIST', 400)
+   }
+   const hashedPassword = await bcrypt.hash(password, 10) 
+   const user = await this.userModel.create({...payload, password: hashedPassword})
+    user.save()
+    delete user.password
+    return user
   }
 
   findAll() {
