@@ -1,6 +1,6 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsNumberString, IsString } from "class-validator";
 
-export class CreateProductDto {
+export class UserDto {
     @IsNotEmpty()
     @IsString()
     userName: string
@@ -10,7 +10,7 @@ export class CreateProductDto {
     Email : string
 
     @IsNotEmpty()
-    @IsNumber()
+    @IsNumberString()
     contact : number
 
     @IsNotEmpty()
