@@ -6,12 +6,11 @@ import { UsersModule } from './users/users.module';
 import { BooksModule } from './books/books.module';
 
 @Module({
-  
-  imports: [BooksModule, 
+    
+  imports: [BooksModule,  UsersModule, AuthModule,
   ConfigModule.forRoot({ isGlobal : true}),
   MongooseModule.forRoot(process.env.DB_URL),
-  AuthModule,
-  UsersModule,
+ 
   ],
   controllers: [],
   providers: [],

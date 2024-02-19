@@ -3,7 +3,7 @@ import { HydratedDocument } from "mongoose";
 import { OneToOne } from "typeorm";
 import { User } from "./user.schema";
 
-export type ProductDocument = HydratedDocument<Profile>;
+export type ProfileDocument = HydratedDocument<Profile>;
 @Schema()
 export class Profile{
     @Prop()
@@ -30,4 +30,4 @@ export class Profile{
   
 }
 
-export const ProductSchema = SchemaFactory.createForClass(Profile)
+export const ProfileSchema = SchemaFactory.createForClass(Profile)

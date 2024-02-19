@@ -24,7 +24,7 @@ export class Books{
     @Prop({ nullable: true })
     coverImage: string;
 
-    @Prop({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @Prop({ default: Date.now }) 
     publicationDate: Date;
 
     @ManyToOne(() => User, user => user.story)
