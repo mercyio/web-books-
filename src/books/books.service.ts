@@ -88,6 +88,22 @@ export class BookService {
      }
 
     }
+
+    // async findByTitle( title:string) {
+    //   try{
+    //    const findBook = await this.bookModel.find({title})
+    //    if(!findBook){
+    //      throw new NotFoundException(`No book record found for ${title}`)
+    //    }
+    //    return findBook
+    //   }
+    //   catch(error){
+    //    return error
+    //   }
+    //  }
+   
+
+
    // async save(payload: UserDto) {
   //   try{
   //     const product = await new this.bookModel(payload);

@@ -23,20 +23,24 @@ export class BookController {
     return await this.bookService.PublishChapters(payload, title);
   }
 
-  @Get(':genre')
+  @Get('find/:genre')
   @UseGuards(AuthGuard())
   async findByGenre(@Param('genre') genre: string) {
     return await this.bookService.findByGenre(genre);
   }
 
   
-  @Get('findall-books')
+  @Get('books')
   @UseGuards(AuthGuard())
   async findAll() {
     return await this.bookService.allGenre();
   }
 
-
+  // @Get('findby/:title')
+  // @UseGuards(AuthGuard())
+  // async findByTitle(@Param('title') title: string) {
+  //   return await this.bookService.findByTitle(title);
+  // }
 
   @Patch(':_id')
   async update(@Param('_id') _id: string, @Body() payload: UpdateUserDto) {
