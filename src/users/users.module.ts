@@ -11,12 +11,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from 'src/strategy/jwt.strategy';
 import { AuthModule } from 'src/auth/auth.module';
 import { BooksModule } from 'src/books/books.module';
+import { Chapter, ChapterSchema } from 'src/schema/chapters.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema}, 
       { name: Books.name, schema: BookSchema}, 
+      { name: Chapter.name, schema: ChapterSchema},
       { name: Profile.name, schema: ProfileSchema}]),
 
       JwtModule.registerAsync({

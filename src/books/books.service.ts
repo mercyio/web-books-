@@ -8,12 +8,16 @@ import { UpdateUserDto } from 'src/dto/update-product.dto';
 import { AuthenticatedRequest } from 'src/interface/user.interface';
 import { BookDto } from 'src/dto/book.dto';
 import { User } from 'src/schema/user.schema';
+import { ChapterDto } from 'src/dto/chapter.dto';
+import { Chapter } from 'src/schema/chapters.schema';
 
 @Injectable()
 export class BookService {
   constructor (
     @InjectModel (Books.name) private bookModel:Model<Books>,
-    @InjectModel (User.name) private userModel:Model<User>){}
+    @InjectModel (User.name) private userModel:Model<User>,
+    @InjectModel (Chapter.name) private chapterModel:Model<Chapter>,
+    ){}
 
 
    // ONE USER TO MANY BOOKS
@@ -54,7 +58,7 @@ export class BookService {
     }
   }
 
-  
+
   async findByGenre( genre:string) {
    try{
     const findGenere = await this.bookModel.find({genre})
@@ -69,6 +73,24 @@ export class BookService {
   }
 
 
+  // ONE Book TO MANY Chapters
+  async PublishChapters(payload:ChapterDto, @Req() req:AuthenticatedRequest ){
+    const user = req.user
+    console.log(user);
+    const _id = user['_id']
+    const finduser = await this.userModel.findOne({_id})
+    if(!finduser){
+      throw new NotFoundException('user not found')
+     }
+     const book= finduser
+     const newChapter = await this.chapterModel.create({...payload, book})
+     newChapter.save()
+     return {
+      message: 'sucessful',
+      newChapter
+     }
+
+    }
    // async save(payload: UserDto) {
   //   try{
   //     const product = await new this.bookModel(payload);
@@ -107,3 +129,4 @@ export class BookService {
   }
   
 }
+

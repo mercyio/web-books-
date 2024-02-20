@@ -10,7 +10,7 @@ import { BookDto } from 'src/dto/book.dto';
 export class BookController {
   constructor(private readonly bookService: BookService) {}
    
-  @Post('publish')
+  @Post('publish-book')
   @UseGuards(AuthGuard())
   async authur(@Body() payload:BookDto, @Req() req:AuthenticatedRequest) {    
     return await this.bookService.Publish(payload, req);
