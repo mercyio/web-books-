@@ -44,16 +44,17 @@ export class BookService {
 
  
 
-  async findAllProducts() {
+  async allGenre() {
     try{
-     const Findproducts = await this.bookModel.find()
-     return Findproducts
+     const find = await this.bookModel.find()
+     return find
     }
     catch(error){
-      return error
+      return 'unable to make this request'
     }
   }
 
+  
   async findByGenre( genre:string) {
    try{
     const findGenere = await this.bookModel.find({genre})

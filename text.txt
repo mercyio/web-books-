@@ -10,21 +10,22 @@ Implement CRUD operations for managing stories.✔️
 Define relationships between users and stories (e.g., one user can write multiple stories).✔️
 
 Genre Management:
-Model genres/categories for stories.
-Allow users to browse stories by genre.
-Implement CRUD operations for managing genres.
-Chapter Management:
+Model genres/categories for stories.✔️
+Allow users to browse stories by genre.✔️
+Implement CRUD operations for managing genres.✔️
 
+
+Chapter Management:
 Create a model for story chapters, including fields like title, content, sequence number, and publication date.
 Associate chapters with stories using relationships (e.g., one story can have multiple chapters).
 Implement CRUD operations for managing chapters.
-Reading and Interaction:
 
+Reading and Interaction:
 Allow users to read chapters of stories.
 Implement features such as bookmarking, liking, commenting, and rating stories.
 Enable users to follow their favorite authors or stories.
-Search and Discovery:
 
+Search and Discovery:
 Implement search functionality to allow users to find stories by title, author, genre, or keywords.
 Provide recommendations based on user preferences, reading history, and trending stories.
 Social Features:

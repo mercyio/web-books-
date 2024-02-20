@@ -18,14 +18,16 @@ export class BookController {
   
 
   @Get(':genre')
+  @UseGuards(AuthGuard())
   async findByGenre(@Param('genre') genre: string) {
     return await this.bookService.findByGenre(genre);
   }
 
   
-  @Get('allusers')
+  @Get('all-books')
+  @UseGuards(AuthGuard())
   async findAll() {
-    return await this.bookService.findAllProducts();
+    return await this.bookService.allGenre();
   }
 
 
