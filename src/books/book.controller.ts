@@ -1,35 +1,43 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@nestjs/common';
 import { BookService } from './books.service';
 import { UserDto } from 'src/dto/user.dto';
 import { UpdateUserDto } from 'src/dto/update-product.dto';
+import { AuthenticatedRequest } from 'src/interface/user.interface';
+import { AuthGuard } from '@nestjs/passport';
+import { BookDto } from 'src/dto/book.dto';
 
-@Controller('product')
+@Controller('book')
 export class BookController {
-  constructor(private readonly productService: BookService) {}
+  constructor(private readonly bookService: BookService) {}
+   
+  @Post('publish')
+  @UseGuards(AuthGuard())
+  async authur(@Body() payload:BookDto, @Req() req:AuthenticatedRequest) {    
+    return await this.bookService.Publish(payload, req);
+  }
+  
 
-  @Post('createprofile')
-  async create(@Body() payload: UserDto) {
-    return await this.productService.save(payload);
+  @Get(':genre')
+  async findByGenre(@Param('genre') genre: string) {
+    return await this.bookService.findByGenre(genre);
   }
 
+  
   @Get('allusers')
   async findAll() {
-    return await this.productService.findAllProducts();
+    return await this.bookService.findAllProducts();
   }
 
-  @Get('getuser/:id')
-  async findOne(@Param('id') id: string) {
-    return await this.productService.findOne(id);
-  }
+
 
   @Patch(':_id')
   async update(@Param('_id') _id: string, @Body() payload: UpdateUserDto) {
-    return await this.productService.update(_id, payload);
+    return await this.bookService.update(_id, payload);
   }
   
   @Delete('delete/:id')
   async remove(@Param('id') id: string) {
-    return await this.productService.remove(id);
+    return await this.bookService.remove(id);
   }
   
 }

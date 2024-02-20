@@ -19,11 +19,7 @@ export class UsersController {
     return await this.usersService.createProfile(payload, req);
   } 
 
-  @Post('publish')
-  @UseGuards(AuthGuard())
-  async authur(@Body() payload:BookDto, @Req() req:AuthenticatedRequest) {    
-    return await this.usersService.Publish(payload, req);
-  }
+ 
 
   // @Get()
   // findAll() {

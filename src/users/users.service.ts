@@ -78,6 +78,7 @@ export class UsersService {
           return{
              id,
              email: user.email, 
+             name: user.displayName,
             //  role:user.role,
              profile: user.profile
           };
@@ -104,30 +105,7 @@ export class UsersService {
 
   
 
-  // ONE USER TO MANY BOOKS
-  async Publish(payload:BookDto, @Req() req:AuthenticatedRequest ){
-    const user = req.user
-    console.log(user);
-    const _id = user['_id']
-    const finduser = await this.userModel.findOne({_id})
-    if(!finduser){
-      throw new NotFoundException('user not found')
-     }
-     const author= finduser
-     const newBook = await this.bookModel.create({...payload, author})
-     newBook.save()
-     return {
-      message: 'sucessful',
-      newBook
-     }
-
-  //   const newBook = new this.bookModel({
-  //     ...payload,
-  //     author: finduser
-  //   });
-
-  //   return newBook.save();
-  }
+ 
   
   }
   

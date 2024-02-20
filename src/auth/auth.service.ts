@@ -22,13 +22,17 @@ export class AuthService {
  
   async signup(payload:SignupDto ) {
    payload.email = payload.email.toLowerCase()
-   const {email, password} =payload
+   const {email, password, displayName} =payload
    const userEmail = await this.userModel.findOne({email})
    if(userEmail){
      throw new HttpException('EMAIL ALREADY EXIST', 400)
    }
+   const repeatedName = await this.userModel.findOne({displayName})
+   if(repeatedName){
+     throw new HttpException('NAME ALREADY EXIST', 400)
+   }
    const hashedPassword = await bcrypt.hash(password, 10) 
-   const user = await this.userModel.create({email, password: hashedPassword})
+   const user = await this.userModel.create({displayName, email, password: hashedPassword})
     user.save()
     delete user.password
     return user
@@ -50,6 +54,7 @@ export class AuthService {
     const token = await this.jwtService.signAsync({
        email: user.email,
        userid: user.id,
+       displayName: user.displayName
       //  role: user.role
     });
     res.cookie('isAuthenticated', token,{
