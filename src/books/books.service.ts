@@ -29,8 +29,8 @@ export class BookService {
     if(!finduser){
       throw new NotFoundException('user not found')
      }
-     const author= finduser
-     const newBook = await this.bookModel.create({...payload, author})
+     const author_id= finduser
+     const newBook = await this.bookModel.create({...payload, author_id})
      newBook.save()
      return {
       message: 'sucessful',
@@ -74,16 +74,13 @@ export class BookService {
 
 
   // ONE Book TO MANY Chapters
-  async PublishChapters(payload:ChapterDto, @Req() req:AuthenticatedRequest ){
-    const user = req.user
-    console.log(user);
-    const _id = user['_id']
-    const finduser = await this.userModel.findOne({_id})
-    if(!finduser){
-      throw new NotFoundException('user not found')
+  async PublishChapters(payload:ChapterDto, title:string ){
+    const findBook = await this.bookModel.findOne({title})
+    if(!findBook){
+      throw new NotFoundException('book not found')
      }
-     const book= finduser
-     const newChapter = await this.chapterModel.create({...payload, book})
+     const book_id= findBook
+     const newChapter = await this.chapterModel.create({...payload, book_id})
      newChapter.save()
      return {
       message: 'sucessful',

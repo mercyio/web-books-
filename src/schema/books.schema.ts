@@ -28,7 +28,7 @@ export class Books{
     publicationDate: Date;
 
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User'})
-    author: MongooseSchema.Types.ObjectId | User
+    author_id: MongooseSchema.Types.ObjectId | User
     
 
 }

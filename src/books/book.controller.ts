@@ -5,6 +5,7 @@ import { UpdateUserDto } from 'src/dto/update-product.dto';
 import { AuthenticatedRequest } from 'src/interface/user.interface';
 import { AuthGuard } from '@nestjs/passport';
 import { BookDto } from 'src/dto/book.dto';
+import { ChapterDto } from 'src/dto/chapter.dto';
 
 @Controller('book')
 export class BookController {
@@ -16,6 +17,11 @@ export class BookController {
     return await this.bookService.Publish(payload, req);
   }
   
+  @Post('publish-chapter/:title')
+  @UseGuards(AuthGuard())
+  async chapter(@Body() payload:ChapterDto, @Param('title') title:string) {    
+    return await this.bookService.PublishChapters(payload, title);
+  }
 
   @Get(':genre')
   @UseGuards(AuthGuard())
@@ -24,7 +30,7 @@ export class BookController {
   }
 
   
-  @Get('all-books')
+  @Get('findall-books')
   @UseGuards(AuthGuard())
   async findAll() {
     return await this.bookService.allGenre();

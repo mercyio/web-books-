@@ -19,10 +19,10 @@ export class User{
     @Prop({ default: Date.now }) 
     createdAt: Date;
 
-    @OneToOne(() => Profile, profile => profile.user)
+    @OneToOne(() => Profile, profile => profile.user_id)
     profile: Profile;
 
-    @OneToMany(() => Books, story => story.author)
+    @OneToMany(() => Books, story => story.author_id)
     story: Books;
 
   

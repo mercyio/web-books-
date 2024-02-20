@@ -23,19 +23,19 @@ export class UsersService {
 
   async createProfile(payload: ProfileDto, @Req() req:AuthenticatedRequest) {
     try{
-      const user = req.user
-      const _id = user['_id']
+      const user_id = req.user
+      const _id = user_id['_id']
 
       const finduser = await this.userModel.findById({_id})
       if(!finduser){
        throw new NotFoundException('user does not exist')
       }
 
-      if(user.profile){
+      if(user_id.profile){
        throw new HttpException('profile already exist, update profile to make changes', 400)
       }
       // const user = finduser
-      const Profile = await this.profileModel.create({...payload, user})
+      const Profile = await this.profileModel.create({...payload, user_id})
       finduser.profile = Profile
       Profile.save()
       return{

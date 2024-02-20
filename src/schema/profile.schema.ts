@@ -30,7 +30,7 @@ export class Profile{
     // @JoinColumn({name: 'user_id'})
     // user: User;
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User'})
-    user: MongooseSchema.Types.ObjectId | User
+    user_id: MongooseSchema.Types.ObjectId | User
    
   
 }

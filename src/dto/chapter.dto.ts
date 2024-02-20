@@ -3,9 +3,9 @@ import { IsNotEmpty, IsNumber, IsNumberString, IsString } from "class-validator"
 export class ChapterDto {
     @IsNotEmpty()
     @IsString()
-    sequencenumber : string
+    sequenceNumber : string
 
-    
+
     @IsNotEmpty()
     @IsString()
     head: string
