@@ -31,7 +31,7 @@ export class UsersService {
        throw new NotFoundException('user does not exist')
       }
 
-      if(finduser.profile){
+      if(user.profile){
        throw new HttpException('profile already exist, update profile to make changes', 400)
       }
       // const user = finduser
@@ -113,20 +113,20 @@ export class UsersService {
     if(!finduser){
       throw new NotFoundException('user not found')
      }
-    //  const users= finduser
-    //  const books = await this.bookModel.create({...payload, user})
-    //  books.save()
-    //  return {
-    //   message: 'sucessful',
-    //   books
-    //  }
+     const author= finduser
+     const newBook = await this.bookModel.create({...payload, author})
+     newBook.save()
+     return {
+      message: 'sucessful',
+      newBook
+     }
 
-    const newBook = new this.bookModel({
-      ...payload,
-      author: finduser
-    });
+  //   const newBook = new this.bookModel({
+  //     ...payload,
+  //     author: finduser
+  //   });
 
-    return newBook.save();
+  //   return newBook.save();
   }
   
   }
