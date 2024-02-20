@@ -60,17 +60,14 @@ export class BookService {
 
 
   async findByGenre( genre:string) {
-   try{
+
     const findGenere = await this.bookModel.find({genre})
     if(!findGenere){
       throw new NotFoundException(`No stories found for genre: ${genre}`)
     }
     return findGenere
    }
-   catch(error){
-    return error
-   }
-  }
+
 
 
   // ONE Book TO MANY Chapters
