@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
-import { OneToOne } from "typeorm";
+import { JoinColumn, OneToOne } from "typeorm";
 import { User } from "./user.schema";
 
 export type ProfileDocument = HydratedDocument<Profile>;
@@ -25,6 +25,7 @@ export class Profile{
     createdAt: Date;
     
     @OneToOne(() => User, user => user.profile)
+    @JoinColumn({name: 'user_id'})
     user: User;
    
   

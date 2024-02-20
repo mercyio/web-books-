@@ -1,17 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserDto } from 'src/dto/user.dto';
 import { UpdateUserDto } from 'src/dto/update-product.dto';
 import { ProfileDto } from 'src/dto/profile.dto';
+import { BookDto } from 'src/dto/book.dto';
+import { AuthenticatedRequest } from 'src/interface/user.interface';
+import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
 
 
-@Controller('users')
+@Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('createprofile')
-  async create(@Body() payload: ProfileDto, _id: string) {
-    return await this.usersService.createProfile(payload, _id);
+  @UseGuards(AuthGuard())
+  async create(@Body() payload: ProfileDto, @Req() req: AuthenticatedRequest) {
+    return await this.usersService.createProfile(payload, req);
+  } 
+
+  @Post('publish')
+  @UseGuards(AuthGuard())
+  async authur(@Body() payload:BookDto, @Req() req:AuthenticatedRequest) {    
+    return await this.usersService.Publish(payload, req);
   }
 
   // @Get()

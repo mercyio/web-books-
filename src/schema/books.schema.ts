@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
-import { ManyToOne } from "typeorm";
+import { HydratedDocument  } from "mongoose";
 import { User } from "./user.schema";
+import { Schema as MongooseSchema } from 'mongoose';
 
 export type BookDocument = HydratedDocument<Books>;
 @Schema()
@@ -16,10 +16,10 @@ export class Books{
     description : string
 
     @Prop()
-    genre: number
+    genre: string
 
-    // @Prop()
-    // author : string
+    @Prop()
+    content : string
 
     @Prop({ nullable: true })
     coverImage: string;
@@ -27,9 +27,8 @@ export class Books{
     @Prop({ default: Date.now }) 
     publicationDate: Date;
 
-    @ManyToOne(() => User, user => user.story)
-    author: User;
-
+    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User'})
+    author: MongooseSchema.Types.ObjectId | User
     
 
 }

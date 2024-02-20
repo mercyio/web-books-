@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupDto } from 'src/dto/signup.dto';
+import { Response } from 'express';
 
 @Controller('user')
 export class AuthController {
@@ -11,9 +12,9 @@ export class AuthController {
     return await this.authService.signup(payload);
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
+  @Post('login')
+  async login(@Body() payload:SignupDto, @Res() res:Response ) {
+    return await this.authService.signin(payload, res);
   }
 
   @Get(':id')
