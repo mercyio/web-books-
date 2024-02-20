@@ -16,7 +16,7 @@ Implement CRUD operations for managing genres.✔️
 
 
 Chapter Management:
-Create a model for story chapters, including fields like title, content, sequence number, and publication date.
+Create a model for story chapters, including fields like title, content, sequence number, and publication date.✔️
 Associate chapters with stories using relationships (e.g., one story can have multiple chapters).
 Implement CRUD operations for managing chapters.
 
