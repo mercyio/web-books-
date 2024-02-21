@@ -12,6 +12,7 @@ import { JwtStrategy } from 'src/strategy/jwt.strategy';
 import { AuthModule } from 'src/auth/auth.module';
 import { BooksModule } from 'src/books/books.module';
 import { Chapter, ChapterSchema } from 'src/schema/chapters.schema';
+import { Bookmark, BookmarkSchema } from 'src/schema/bookmark.schema';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { Chapter, ChapterSchema } from 'src/schema/chapters.schema';
       { name: User.name, schema: UserSchema}, 
       { name: Books.name, schema: BookSchema}, 
       { name: Chapter.name, schema: ChapterSchema},
+      { name: Bookmark.name, schema: BookmarkSchema},
       { name: Profile.name, schema: ProfileSchema}]),
 
       JwtModule.registerAsync({

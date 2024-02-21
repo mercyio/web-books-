@@ -7,7 +7,7 @@ export type BookDocument = HydratedDocument<Books>;
 @Schema()
 export class Books{
     @Prop()
-    bookId : string
+    _id : string
 
     @Prop()
     title : string

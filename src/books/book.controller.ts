@@ -7,6 +7,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { BookDto } from 'src/dto/book.dto';
 import { ChapterDto } from 'src/dto/chapter.dto';
 import { ReadChapters } from 'src/dto/readChapters.dto';
+import { BookmarkDto } from 'src/dto/bookmark.dto';
 
 @Controller('book')
 export class BookController {
@@ -23,7 +24,12 @@ export class BookController {
   async chapter(@Body() payload:ChapterDto, @Param('title') title:string) {    
     return await this.bookService.PublishChapters(payload, title);
   }
-
+  
+  @Post('bookmark')
+  @UseGuards(AuthGuard())
+  async bookmark(@Body() payload:BookmarkDto,  @Req() req:AuthenticatedRequest){
+    return await this.bookService.addBookmark(payload, req)
+  }
   @Get('find/:genre')
   @UseGuards(AuthGuard())
   async findByGenre(@Param('genre') genre: string) {
@@ -49,6 +55,10 @@ export class BookController {
     return await this.bookService.getChaptersByTitle( title, payload);
   }
 
+  @Get('chapters/:_id')
+  async chapters(@Param('_id') _id:string){
+    return await this.bookService.getAllChaptersByBookTitle(_id)
+  }
   @Patch(':_id')
   async update(@Param('_id') _id: string, @Body() payload: UpdateUserDto) {
     return await this.bookService.update(_id, payload);
