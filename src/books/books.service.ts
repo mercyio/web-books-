@@ -102,13 +102,13 @@ export class BookService {
 
 
 
-     async findByChapter( title:string, payload:ReadChapters) {
+     async getChaptersByTitle( title:string, payload:ReadChapters) {
       try{
        const findBook = await this.bookModel.find({title})
        if(!findBook){
          throw new NotFoundException(`No book record found for ${title}`)
        }
-       const chapter = await this.bookModel.findOne({payload})
+       const chapter = await this.chapterModel.find()
        if(!chapter){
         throw new NotFoundException(`No chapter found for ${title}`)
       }
@@ -121,6 +121,18 @@ export class BookService {
    
 
 
+    
+      async getAllChapters(bookId: string) {
+        const storyChapters = await this.chapterModel.find({ bookId }).exec();
+        if (!storyChapters || storyChapters.length === 0) {
+          throw new NotFoundException(`No chapters found for story with ID: ${bookId}`);
+        }
+        return storyChapters;
+      }
+
+
+
+     
    // async save(payload: UserDto) {
   //   try{
   //     const product = await new this.bookModel(payload);

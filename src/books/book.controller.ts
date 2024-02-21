@@ -46,7 +46,7 @@ export class BookController {
   @Get('findby/:title')
   @UseGuards(AuthGuard())
   async findByChapter( @Param('title') title: string,  @Body() payload:ReadChapters,) {
-    return await this.bookService.findByChapter( title, payload);
+    return await this.bookService.getChaptersByTitle( title, payload);
   }
 
   @Patch(':_id')
