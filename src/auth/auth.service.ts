@@ -6,6 +6,7 @@ import { User } from 'src/schema/user.schema';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import {Request, Response}  from 'express';
+import { LoginDto } from 'src/dto/login.dto';
 
 
 
@@ -40,7 +41,7 @@ export class AuthService {
 
 
 
-  async signin(payload:SignupDto, @Res()res:Response){
+  async signin(payload:LoginDto, @Res()res:Response){
     const {email, password} = payload;
     const user = await this.userModel.findOne({email})
     // .addSelect("user.password")

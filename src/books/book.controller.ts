@@ -6,6 +6,7 @@ import { AuthenticatedRequest } from 'src/interface/user.interface';
 import { AuthGuard } from '@nestjs/passport';
 import { BookDto } from 'src/dto/book.dto';
 import { ChapterDto } from 'src/dto/chapter.dto';
+import { ReadChapters } from 'src/dto/readChapters.dto';
 
 @Controller('book')
 export class BookController {
@@ -36,11 +37,17 @@ export class BookController {
     return await this.bookService.allGenre();
   }
 
-  // @Get('findby/:title')
-  // @UseGuards(AuthGuard())
-  // async findByTitle(@Param('title') title: string) {
-  //   return await this.bookService.findByTitle(title);
-  // }
+  @Get(':title')
+  @UseGuards(AuthGuard())
+  async findByTitle(@Param('title') title: string) {
+    return await this.bookService.findByTitle(title);
+  }
+
+  @Get('findby/:title')
+  @UseGuards(AuthGuard())
+  async findByChapter( @Param('title') title: string,  @Body() payload:ReadChapters,) {
+    return await this.bookService.findByChapter( title, payload);
+  }
 
   @Patch(':_id')
   async update(@Param('_id') _id: string, @Body() payload: UpdateUserDto) {

@@ -10,6 +10,7 @@ import { BookDto } from 'src/dto/book.dto';
 import { User } from 'src/schema/user.schema';
 import { ChapterDto } from 'src/dto/chapter.dto';
 import { Chapter } from 'src/schema/chapters.schema';
+import { ReadChapters } from 'src/dto/readChapters.dto';
 
 @Injectable()
 export class BookService {
@@ -61,11 +62,11 @@ export class BookService {
 
   async findByGenre( genre:string) {
 
-    const findGenere = await this.bookModel.find({genre})
-    if(!findGenere){
-      throw new NotFoundException(`No stories found for genre: ${genre}`)
+    const findGenre = await this.bookModel.find({genre})
+    if(!findGenre){
+      throw new NotFoundException(`No book found for genre: ${genre}`)
     }
-    return findGenere
+    return findGenre
    }
 
 
@@ -86,18 +87,37 @@ export class BookService {
 
     }
 
-    // async findByTitle( title:string) {
-    //   try{
-    //    const findBook = await this.bookModel.find({title})
-    //    if(!findBook){
-    //      throw new NotFoundException(`No book record found for ${title}`)
-    //    }
-    //    return findBook
-    //   }
-    //   catch(error){
-    //    return error
-    //   }
-    //  }
+    async findByTitle( title:string) {
+      try{
+       const findBook = await this.bookModel.find({title})
+       if(!findBook){
+         throw new NotFoundException(`No book record found for ${title}`)
+       }
+       return findBook
+      }
+      catch(error){
+       return error
+      }
+     }
+
+
+
+     async findByChapter( title:string, payload:ReadChapters) {
+      try{
+       const findBook = await this.bookModel.find({title})
+       if(!findBook){
+         throw new NotFoundException(`No book record found for ${title}`)
+       }
+       const chapter = await this.bookModel.findOne({payload})
+       if(!chapter){
+        throw new NotFoundException(`No chapter found for ${title}`)
+      }
+       return chapter 
+      }
+      catch(error){
+       return error
+      }
+     }
    
 
 
