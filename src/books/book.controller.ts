@@ -13,7 +13,7 @@ import { BookmarkDto } from 'src/dto/bookmark.dto';
 export class BookController {
   constructor(private readonly bookService: BookService) {}
    
-  @Post('publish-book')
+  @Post('publishBook')
   @UseGuards(AuthGuard())
   async authur(@Body() payload:BookDto, @Req() req:AuthenticatedRequest) {    
     return await this.bookService.Publish(payload, req);

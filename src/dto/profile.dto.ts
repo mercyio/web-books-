@@ -3,11 +3,11 @@ import { IsNotEmpty, IsNumber, IsNumberString, IsString } from "class-validator"
 export class ProfileDto {
     @IsNotEmpty()
     @IsString()
-    firstname: string
+    fullname: string
 
     @IsNotEmpty()
     @IsString()
-    lastname : string
+    location : string
 
     @IsNotEmpty()
     @IsNumberString()

@@ -10,7 +10,7 @@ export class SignupDto {
     @IsString()
     password : string
 
-    @IsNotEmpty()
-    @IsString()
-    displayName : string
+    // @IsNotEmpty()
+    // @IsString()
+    // displayName : string
 }

@@ -3,12 +3,14 @@ import { HydratedDocument } from "mongoose";
 import { OneToMany, OneToOne } from "typeorm";
 import { Profile } from "./profile.schema";
 import { Books } from "./books.schema";
+import { Schema as MongooseSchema } from 'mongoose';
+
 
 export type UserDocument = HydratedDocument<User>;
 @Schema()
 export class User{
-    @Prop()
-    displayName : string
+    // @Prop()
+    // displayName : string
 
     @Prop()
     email : string
@@ -19,11 +21,11 @@ export class User{
     @Prop({ default: Date.now }) 
     createdAt: Date;
 
-    @OneToOne(() => Profile, profile => profile.user_id)
-    profile: Profile;
+    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Profile'})
+    profile: MongooseSchema.Types.ObjectId | Profile
 
-    @OneToMany(() => Books, story => story.author_id)
-    story: Books;
+    // @OneToMany(() => Books, story => story.author_id)
+    // story: Books;
 
   
 }

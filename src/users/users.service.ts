@@ -22,22 +22,24 @@ export class UsersService {
    ){}
 
   async createProfile(payload: ProfileDto, @Req() req:AuthenticatedRequest) {
-    try{
-      const user_id = req.user
-      const _id = user_id['_id']
+   //  try{
+      const user = req.user
+      const _id = user['_id']
 
       const finduser = await this.userModel.findById({_id})
       if(!finduser){
        throw new NotFoundException('user does not exist')
       }
+      console.log(finduser);
+      
 
-      if(user_id.profile){
+      if(user.profile){
        throw new HttpException('profile already exist, update profile to make changes', 400)
       }
       // const user = finduser
-      const Profile = await this.profileModel.create({...payload, user_id})
+      const Profile = await this.profileModel.create({...payload, user_id: user})
       finduser.profile = Profile
-      Profile.save()
+      await finduser.save()
       return{
         msg: 'sucessfull',
         result: Profile
@@ -46,11 +48,24 @@ export class UsersService {
     catch(error){
       return 'failed to create profile'
     }
-   
-  }
+  
+    async updateProfile(payload: ProfileDto, @Req() req:AuthenticatedRequest) {
 
-  async updateProfile() {
-    
+         const user = req.user
+         const  _id = user['_id']
+   
+         const finduser = await this.userModel.findById({_id})
+         if(!finduser){
+          throw new NotFoundException('user does not exist')
+         }
+         console.log(finduser);
+     
+     const update = await this.profileModel.findByIdAndUpdate( finduser.profile, payload, {new:true} )
+   //   update.save()
+     return{
+      msg: 'sucessful',
+      result: update
+     }
   }
 
 
@@ -71,21 +86,21 @@ export class UsersService {
        const token = authorizationHeader.replace('Bearer', '').trim();
        // console.log(token);
        const secretOrKey = process.env.JWT_SECRET;
-       try{
-          const decoded = this.jwtService.verify(token);
-          let id = decoded["id"];
-          let user = await this.userModel.findById({id});
-          return{
-             id,
-             email: user.email, 
-             name: user.displayName,
-            //  role:user.role,
-             profile: user.profile
-          };
-       } 
-       catch(error){
-          throw new UnauthorizedException('invalid TOKEN');
-       }
+   //     try{
+   //        const decoded = this.jwtService.verify(token);
+   //        let id = decoded["id"];
+   //        let user = await this.userModel.findById({id});
+   //        return{
+   //           id,
+   //           email: user.email, 
+   //           name: user.displayName,
+   //          //  role:user.role,
+   //           profile: user.profile
+   //        };
+   //     } 
+   //     catch(error){
+   //        throw new UnauthorizedException('invalid TOKEN');
+   //     }
     }
     else{
           throw new UnauthorizedException('invalid or missing bearer token')

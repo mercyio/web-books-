@@ -7,18 +7,15 @@ import { Schema as MongooseSchema } from 'mongoose';
 
 export type ProfileDocument = HydratedDocument<Profile>;
 @Schema()
-export class Profile{
-    @Prop()
-    id : string
-    
-    @Prop()
-    firstname : string
-
-    @Prop()
-    lastname : string
+export class Profile{ 
+   @Prop()
+    fullname : string
 
     @Prop()
     age : string
+
+    @Prop()
+    location : string
 
     @Prop()
     contact : string

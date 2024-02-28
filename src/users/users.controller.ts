@@ -19,7 +19,11 @@ export class UsersController {
     return await this.usersService.createProfile(payload, req);
   } 
 
- 
+ @Post('updateProfile')
+ @UseGuards(AuthGuard())
+ async update(@Body() payload:ProfileDto, @Req() req:AuthenticatedRequest){
+  return await this.usersService.updateProfile(payload, req)
+ }
 
   // @Get()
   // findAll() {
