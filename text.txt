@@ -21,7 +21,7 @@ Associate chapters with stories using relationships (e.g., one story can have mu
 Implement CRUD operations for managing chapters.✔️
 
 Reading and Interaction:
-Allow users to read chapters of stories.
+Allow users to read chapters of stories.✔️
 Implement features such as bookmarking, liking, commenting, and rating stories.
 Enable users to follow their favorite authors or stories.
 

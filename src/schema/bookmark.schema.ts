@@ -2,20 +2,21 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose, { HydratedDocument  } from "mongoose";
 import { User } from "./user.schema";
 import { Schema as MongooseSchema } from 'mongoose';
+import { Books } from "./books.schema";
 
 export type Document = HydratedDocument<Bookmark>;
 @Schema()
 export class Bookmark{
 
-    // @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User'})
-    // book_id: MongooseSchema.Types.ObjectId | User
+    // @Prop()
+    // _id: string
 
+    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Books'})
+    book_id: MongooseSchema.Types.ObjectId | Books
 
-    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Book'})
-    bookId: { type: mongoose.Schema.Types.ObjectId, ref: 'Book', required: true }
 
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User'})
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
+    user_id: MongooseSchema.Types.ObjectId | User
 
     @Prop({ default: Date.now }) 
     createdAt: Date;

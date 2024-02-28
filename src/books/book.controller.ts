@@ -27,8 +27,8 @@ export class BookController {
   
   @Post('bookmark')
   @UseGuards(AuthGuard())
-  async bookmark(@Body() payload:BookmarkDto,  @Req() req:AuthenticatedRequest){
-    return await this.bookService.addBookmark(payload, req)
+  async bookmark(@Body() payload:BookmarkDto, _id:string,  @Req() req:AuthenticatedRequest){
+    return await this.bookService.addBookmark(payload ,_id, req)
   }
   @Get('find/:genre')
   @UseGuards(AuthGuard())

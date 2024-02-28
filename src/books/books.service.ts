@@ -1,4 +1,4 @@
-import { HttpException, Injectable, NotFoundException, Req } from '@nestjs/common';
+import { ConflictException, HttpException, Injectable, InternalServerErrorException, NotFoundException, Req, UnauthorizedException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';5
 import { error } from 'console';
@@ -151,28 +151,45 @@ export class BookService {
       }
       
 
-     async addBookmark( payload: BookmarkDto, @Req() req:AuthenticatedRequest) {
-      const users = req.user
-      const userId = users['_id']
 
-      const user = await this.userModel.findById(userId);
-      if (!user) throw new NotFoundException('User not found');
-  
-      const book = await this.bookModel.findById(payload.bookId);
-      if (!book) throw new NotFoundException('Book not found');
-  
-      const existingBookmark = await this.bookmarkModel.findOne({
-        user: userId,
-        book: payload.bookId,
-      });
-      if (existingBookmark) throw new NotFoundException('Bookmark already exists');
-  
-      const newBookmark = new this.bookmarkModel({
-        user: userId,
-        book: payload.bookId,
-      });
-      return newBookmark.save();
+      async addBookmark(payload: BookmarkDto, _id: string, @Req() req: AuthenticatedRequest) {
+        // try {
+            const users = req.user;
+            const userId = users['_id'];
+            
+    
+            const user = await this.userModel.findById(userId);
+            if (!user){
+              throw new NotFoundException('User not found');
+            } 
+            console.log(user);
+             
+            const book = await this.bookModel.findOne({_id}).exec();
+            // if (!book) {
+            //     throw new UnauthorizedException('Book do not exists');
+            // }
+          console.log(book);
+
+            const existingBookmark = await this.bookmarkModel.findOne({ payload, user_id:userId }).exec();
+            if (existingBookmark) {
+                throw new UnauthorizedException('Bookmark already exists');
+            }
+          console.log(existingBookmark);
+          
+            const newBookmark = new this.bookmarkModel({ ...payload,user_id:userId });
+            console.log(newBookmark);
+            return await newBookmark.save();
+
+            
+        // } catch (error) {
+        //     if (error.code === 11000 || error.name === 'MongoError') {
+        //         throw new ConflictException('Duplicate key error: Bookmark already exists');
+        //     } else {
+        //         throw new InternalServerErrorException('Failed to add bookmark');
+            // }
+        // }
     }
+    
 
   // async addBookmark(payload: BookmarkDto) {
   //   const { userId, bookId } = payload;
