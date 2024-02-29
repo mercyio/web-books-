@@ -1,8 +1,8 @@
 Building an online Wattpad-like platform can be an exciting project that involves managing relationships between users, stories, genres, chapters, comments, and more. Here's how you can approach building this project with NestJS:
 
 User Management:
-Implement user authentication and authorization using packages like Passport.js or JWT (JSON Web Tokens). ✔️
-Manage user profiles, including registration, login, profile updates, and password reset functionality.  
+Implement user authentication and authorization* using packages like Passport.js or JWT (JSON Web Tokens). ✔️
+Manage user profiles, including registration, login, profile updates, and password reset* functionality.  
 
 Story Management:
 Create a model for stories, including fields like title, description, genre, author, cover image, and publication date.✔️

@@ -4,6 +4,7 @@ import { User } from "./user.schema";
 import { Schema as MongooseSchema } from 'mongoose';
 import { Chapter } from "./chapters.schema";
 import { Profile } from "./profile.schema";
+import { Like } from "./like.schema";
 
 export type BookDocument = HydratedDocument<Books>;
 @Schema()
@@ -30,7 +31,10 @@ export class Books{
     author_id: MongooseSchema.Types.ObjectId | Profile
 
     @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Chapter' }] })
-    chapters_id:  Chapter[];
+    chapters:  Chapter[];
+
+    @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Like' }] })
+    likes:  Like[];
 
 }
 

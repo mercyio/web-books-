@@ -13,6 +13,8 @@ import { AuthModule } from 'src/auth/auth.module';
 import { BooksModule } from 'src/books/books.module';
 import { Chapter, ChapterSchema } from 'src/schema/chapters.schema';
 import { Bookmark, BookmarkSchema } from 'src/schema/bookmark.schema';
+import { LikeSchema } from 'src/schema/like.schema';
+import { Like } from 'typeorm';
 
 @Module({
   imports: [
@@ -21,7 +23,10 @@ import { Bookmark, BookmarkSchema } from 'src/schema/bookmark.schema';
       { name: Books.name, schema: BookSchema}, 
       { name: Chapter.name, schema: ChapterSchema},
       { name: Bookmark.name, schema: BookmarkSchema},
+      { name: Like.name, schema: LikeSchema},
+      // { name: Comment.name, schema: CommentSchema},
       { name: Profile.name, schema: ProfileSchema}]),
+
 
       JwtModule.registerAsync({
         imports: [ConfigModule],

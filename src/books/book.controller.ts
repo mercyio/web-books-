@@ -15,8 +15,8 @@ export class BookController {
    
   @Post('publishBook')
   @UseGuards(AuthGuard())
-  async authur(@Body() payload:BookDto, @Req() req:AuthenticatedRequest, _id:string) {    
-    return await this.bookService.Publish(payload, req, _id);
+  async authur(@Body() payload:BookDto, @Req() req:AuthenticatedRequest) {    
+    return await this.bookService.Publish(payload, req);
   }
   
   @Post('chapter/:_id')
@@ -29,6 +29,12 @@ export class BookController {
   @UseGuards(AuthGuard())
   async bookmark(@Body() payload:BookmarkDto, _id:string,  @Req() req:AuthenticatedRequest){
     return await this.bookService.addBookmark(payload ,_id, req)
+  }
+
+  @Post('like')
+  @UseGuards(AuthGuard())
+  async like(@Body() payload:BookmarkDto, _id:string,  @Req() req:AuthenticatedRequest){
+    return await this.bookService.likes(payload ,_id, req)
   }
   @Get('find/:genre')
   @UseGuards(AuthGuard())
