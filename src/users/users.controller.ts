@@ -14,7 +14,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('createprofile')
-  @UseGuards(AuthGuard())
+  // @UseGuards(AuthGuard())
   async create(@Body() payload: ProfileDto, @Req() req: AuthenticatedRequest) {
     return await this.usersService.createProfile(payload, req);
   } 

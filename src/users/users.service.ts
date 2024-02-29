@@ -1,15 +1,9 @@
 import { HttpException, Injectable, NotFoundException, Req, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { UpdateUserDto } from 'src/dto/update-product.dto';
-import { UserDto } from 'src/dto/user.dto';
 import { User } from 'src/schema/user.schema';
 import { Profile } from 'src/schema/profile.schema';
 import { ProfileDto } from 'src/dto/profile.dto';
-import { BookDto } from 'src/dto/book.dto';
-import { Books } from 'src/schema/books.schema';
-import { Request } from 'express';
-import { JwtService } from '@nestjs/jwt';
 import { AuthenticatedRequest } from 'src/interface/user.interface';
 
 @Injectable()
@@ -17,14 +11,12 @@ export class UsersService {
    constructor (
    @InjectModel (User.name) private userModel:Model<User>,
    @InjectModel (Profile.name) private profileModel:Model<Profile>,
-   @InjectModel (Books.name) private bookModel:Model<Books>,
-   private jwtService :JwtService,
    ){}
 
   async createProfile(payload: ProfileDto, @Req() req:AuthenticatedRequest) {
    //  try{
       const user = req.user
-      const _id = user['_id']
+      const _id = user['_id'] 
 
       const finduser = await this.userModel.findById({_id})
       if(!finduser){

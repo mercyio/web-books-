@@ -3,29 +3,18 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/schema/user.schema';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { Books, BookSchema } from 'src/schema/books.schema';
-import { Profile, ProfileSchema } from 'src/schema/profile.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from 'src/strategy/jwt.strategy';
-import { UsersService } from 'src/users/users.service';
-import { UsersModule } from 'src/users/users.module';
-import { BooksModule } from 'src/books/books.module';
-import { Chapter, ChapterSchema } from 'src/schema/chapters.schema';
-import { Bookmark, BookmarkSchema } from 'src/schema/bookmark.schema';
-import { Like, LikeSchema } from 'src/schema/like.schema';
+
+// import { Comment, CommentSchema } from 'src/schema/comment.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema}, 
-      { name: Books.name, schema: BookSchema}, 
-      { name: Chapter.name, schema: ChapterSchema},
-      { name: Bookmark.name, schema: BookmarkSchema},
-      { name: Like.name, schema: LikeSchema},
-      // { name: Comment.name, schema: CommentSchema},
-      { name: Profile.name, schema: ProfileSchema}]),
+    ]),
+
 
       JwtModule.registerAsync({
         imports: [ConfigModule],
@@ -44,11 +33,11 @@ import { Like, LikeSchema } from 'src/schema/like.schema';
     PassportModule.register({
         defaultStrategy: 'jwt'
     }),
-    UsersModule
+    // UsersModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy,UsersService],
-  exports: [AuthService, JwtStrategy, PassportModule],
+  providers: [AuthService,PassportModule ],
+  exports: [AuthService,PassportModule ],
 
 })
 export class AuthModule {}

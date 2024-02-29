@@ -4,9 +4,9 @@ import { User } from "./user.schema";
 import { Schema as MongooseSchema } from 'mongoose';
 import { Books } from "./books.schema";
 
-export type Document = HydratedDocument<Bookmark>;
+export type Document = HydratedDocument<Features>;
 @Schema()
-export class Bookmark{
+export class Features{
 
     // @Prop()
     // _id: string
@@ -23,4 +23,4 @@ export class Bookmark{
 
 }
 
-export const BookmarkSchema = SchemaFactory.createForClass(Bookmark)
+export const FeaturesSchema = SchemaFactory.createForClass(Features)
