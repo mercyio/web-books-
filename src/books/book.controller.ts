@@ -15,8 +15,8 @@ export class BookController {
    
   @Post('publishBook')
   @UseGuards(AuthGuard())
-  async authur(@Body() payload:BookDto, @Req() req:AuthenticatedRequest) {    
-    return await this.bookService.Publish(payload, req);
+  async authur(@Body() payload:BookDto, @Req() req:AuthenticatedRequest, _id:string) {    
+    return await this.bookService.Publish(payload, req, _id);
   }
   
   @Post('chapter/:_id')

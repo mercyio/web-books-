@@ -13,6 +13,7 @@ import { Chapter } from 'src/schema/chapters.schema';
 import { ReadChapters } from 'src/dto/readChapters.dto';
 import { BookmarkDto } from 'src/dto/bookmark.dto';
 import { Bookmark } from 'src/schema/bookmark.schema';
+import { Profile } from 'src/schema/profile.schema';
 
 @Injectable()
 export class BookService {
@@ -21,21 +22,41 @@ export class BookService {
     @InjectModel (User.name) private userModel:Model<User>,
     @InjectModel (Chapter.name) private chapterModel:Model<Chapter>,
     @InjectModel (Bookmark.name) private bookmarkModel:Model<Bookmark>,
+    @InjectModel (Profile.name) private profilemodel:Model<Profile>,
     ){}
 
 
    // ONE USER TO MANY BOOKS
-   async Publish(payload:BookDto, @Req() req:AuthenticatedRequest ){
+   async Publish(payload:BookDto, @Req() req:AuthenticatedRequest, _id:string ){
     const user = req.user
     console.log(user);
-    const _id = user['_id']
-    const finduser = await this.userModel.findOne({_id})
+    const userid = user['_id']
+    const finduser = await this.userModel.findById(userid)
     if(!finduser){
       throw new NotFoundException('user not found')
      }
+
+    //  const findProfile = await this.Profilemodel.findOne({_id})
+
+    const profile_id = finduser.profile
+     if(!profile_id){
+      throw new NotFoundException('Set up your profile')
+     }
+     console.log(finduser.profile);
+     
+     const userProfile = await this.profilemodel.findById(profile_id);
+     if (!userProfile) {
+         throw new NotFoundException('User profile not found');
+     }
+
      const author_id= finduser
      const newBook = await this.bookModel.create({...payload, author_id})
-     newBook.save()
+
+     userProfile.books = userProfile.books || [];
+     userProfile.books.push(newBook);
+
+     await userProfile.save();
+    //  newBook.save()
      return {
       message: 'sucessful',
       newBook
