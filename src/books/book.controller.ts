@@ -19,10 +19,10 @@ export class BookController {
     return await this.bookService.Publish(payload, req);
   }
   
-  @Post('publish-chapter/:title')
+  @Post('chapter/:_id')
   @UseGuards(AuthGuard())
-  async chapter(@Body() payload:ChapterDto, @Param('title') title:string) {    
-    return await this.bookService.PublishChapters(payload, title);
+  async chapter(@Body() payload:ChapterDto, @Param('_id') _id:string) {    
+    return await this.bookService.PublishChapters(payload, _id);
   }
   
   @Post('bookmark')

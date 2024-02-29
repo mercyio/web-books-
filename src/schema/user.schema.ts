@@ -21,6 +21,9 @@ export class User{
     @Prop({ default: Date.now }) 
     createdAt: Date;
 
+    @Prop({ type:[{type: MongooseSchema.Types.ObjectId, ref: 'Books'}]})
+    books: MongooseSchema.Types.ObjectId | Books[]
+
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Profile'})
     profile: MongooseSchema.Types.ObjectId | Profile
 

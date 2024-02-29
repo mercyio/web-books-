@@ -75,20 +75,28 @@ export class BookService {
 
 
   // ONE Book TO MANY Chapters
-  async PublishChapters(payload:ChapterDto, title:string ){
-    const findBook = await this.bookModel.findOne({title})
+  async PublishChapters(payload:ChapterDto, _id:string ){
+    const findBook = await this.bookModel.findOne({_id})
     if(!findBook){
       throw new NotFoundException('book not found')
      }
      const book_id= findBook
      const newChapter = await this.chapterModel.create({...payload, book_id})
-     newChapter.save()
+
+     findBook.chapters_id = findBook.chapters_id || [];
+
+     findBook.chapters_id.push(newChapter);
+
+    
+     await findBook.save();
      return {
       message: 'sucessful',
       newChapter
      }
 
     }
+
+
 
     async findByTitle( title:string) {
       try{

@@ -2,6 +2,8 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument  } from "mongoose";
 import { User } from "./user.schema";
 import { Schema as MongooseSchema } from 'mongoose';
+import { Chapter } from "./chapters.schema";
+import { Profile } from "./profile.schema";
 
 export type BookDocument = HydratedDocument<Books>;
 @Schema()
@@ -24,9 +26,11 @@ export class Books{
     @Prop({ default: Date.now }) 
     publicationDate: Date;
 
-    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User'})
-    author_id: MongooseSchema.Types.ObjectId | User
-    
+    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Profile'})
+    author_id: MongooseSchema.Types.ObjectId | Profile
+
+    @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Chapter' }] })
+    chapters_id:  Chapter[];
 
 }
 
