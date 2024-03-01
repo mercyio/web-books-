@@ -27,14 +27,14 @@ export class Books {
   @Prop({ default: Date.now })
   publicationDate: Date;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Profile' })
-  author_id: MongooseSchema.Types.ObjectId | Profile;
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
+  author_id: MongooseSchema.Types.ObjectId | User;
 
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Chapter' }] })
   chapters: Chapter[];
 
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Features' }] })
-  likes: Features[];
+  likes: User[];
 
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Comment' }] })
   comments: Comment[];

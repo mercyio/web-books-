@@ -22,7 +22,7 @@ import { ReadChapters } from 'src/dto/readChapters.dto';
 import { BookmarkDto } from 'src/dto/bookmark.dto';
 import { Features } from 'src/schema/features.schema';
 import { Profile } from 'src/schema/profile.schema';
-// import {  Likes } from 'src/schema/like.schema';
+// import {  Like } from 'src/schema/like.schema';
 // import { Comment } from 'src/schema/comment.schema';
 
 @Injectable()
@@ -33,7 +33,7 @@ export class BookService {
     @InjectModel(Chapter.name) private chapterModel: Model<Chapter>,
     @InjectModel(Features.name) private featuresModel: Model<Features>,
     // @InjectModel (Profile.name) private profilemodel:Model<Profile>,
-    // @InjectModel (Likes.name) private likemodel:Model<Likes>,
+    // @InjectModel (Like.name) private likemodel:Model<Like>,
     // @InjectModel (Comment.name) private commentmodel:Model<Comment>,
   ) {}
 
@@ -235,96 +235,113 @@ export class BookService {
     // try {
     const users = req.user;
     const userId = users['_id'];
-    const {book_id} = payload
+    const { book_id } = payload;
 
     const user = await this.userModel.findById(userId);
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    console.log(user);
+    // console.log(user);
 
-    const book = await this.bookModel.findOne({ payload}).exec();
+    const book = await this.bookModel.findOne({ _id: book_id }).exec();
     if (!book) {
       throw new UnauthorizedException('Book do not exists');
     }
-    console.log(book);
+    // console.log(book);
 
-    const alreadyLiked = await this.featuresModel
-      .findOneAndUpdate({ payload, user_id: userId })
-      .exec();
-    if (alreadyLiked) {
-      return alreadyLiked;
-    }
+
+    const alreadyLikedIndex = book.likes.indexOf(userId);
+  
+    console.log(alreadyLikedIndex);
+    
+  if (alreadyLikedIndex === -1) {
+    book.likes.push(userId);
+  } else {
+    book.likes.splice(alreadyLikedIndex, 1);
+  }
+  await book.save();
+
+  return { 
+    message: 'Successful',
+     book 
+    };
+
+    // const alreadyLiked = await this.featuresModel
+    //   .findOneAndUpdate({ payload, user_id: userId })
+    //   .exec();
+    // if (alreadyLiked) {
+    //   return alreadyLiked;
+    // }
 
     // console.log(alreadyLiked);
 
-    const likedBook = await this.featuresModel.create({
-      ...payload,
-      user_id: userId,
-    });
-    book.likes = book.likes || [];
-    book.likes.push(likedBook);
+    // const likedBook = await this.userModel.create({
+    //   book_id,
+    //   user_id: userId,
+    // });
+    // book.likes = book.likes || [];
+    // book.likes.push(likedBook);
 
-    console.log(likedBook);
+    // console.log(likedBook);
 
-    await book.save();
-    return {
-      message: 'sucessful',
-      likedBook,
-    };
+    // await book.save();
+    // return {
+    //   message: 'sucessful',
+    //   likedBook,
+    // };
   }
 
-  // async comment(payload: BookmarkDto, _id:string, @Req() req: AuthenticatedRequest) {
+  
+
+  // async comments(
+  //   payload: BookmarkDto,
+  //   _id: string,
+  //   @Req() req: AuthenticatedRequest,
+  // ) {
   //   // try {
-  //       const users = req.user;
-  //       const userId = users['_id'];
+  //   const users = req.user;
+  //   const userId = users['_id'];
+  //   const { book_id } = payload;
 
-  //       const user = await this.userModel.findById(userId);
-  //       if (!user){
-  //         throw new NotFoundException('User not found');
-  //       }
-  //       console.log(user);
-
-  //       const book = await this.bookModel.findOne({_id:payload}).exec();
-  //       if (!book) {
-  //           throw new UnauthorizedException('Book do not exists');
-  //       }
-  //     console.log(book);
-
-  //     const comment = await this.commentmodel.create({...payload, user_id:userId })
-  //     book.likes = book.likes || [];
-  //     book.likes.push(comment);
-
-  //     console.log(comment);
-
-  //     await book.save();
-  //    return {
-  //     message: 'sucessful',
-  //     comment
-  //    }
+  //   const user = await this.userModel.findById(userId);
+  //   if (!user) {
+  //     throw new NotFoundException('User not found');
   //   }
+  //   console.log(user);
 
-  // async commenting(payload: BookmarkDto, _id: string, @Req() req: AuthenticatedRequest) {
-  //   // try {
-  //       const users = req.user;
-  //       const userId = users['_id'];
+  //   const book = await this.bookModel.findOne({ _id: book_id }).exec();
+  //   if (!book) {
+  //     throw new UnauthorizedException('Book do not exists');
+  //   }
+  //   console.log(book);
 
-  //       const user = await this.userModel.findById(userId);
-  //       if (!user){
-  //         throw new NotFoundException('User not found');
-  //       }
-  //       console.log(user);
+  //   // const alreadyLiked = await this.featuresModel
+  //   //   .findOneAndUpdate({ payload, user_id: userId })
+  //   //   .exec();
+  //   // if (alreadyLiked) {
+  //   //   return alreadyLiked;
+  //   // }
 
-  //       const book = await this.bookModel.findById({payload}).exec();
-  //       // if (!book) {
-  //       //     throw new UnauthorizedException('Book do not exists');
-  //       // }
-  //     console.log(book);
+  //   // console.log(alreadyLiked);
 
-  //       const comments = new this.commentmodel({ ...payload,user_id:userId });
-  //       console.log(comments);
-  //       return await comments.save();
-  //     }
+  //   const comments = await this.featuresModel.create({
+  //     book_id,
+  //     user_id: userId,
+  //   });
+  //   book.comments = book.comments || [];
+  //   book.likes.push(comments);
+
+  //   console.log(comments);
+
+  //   await book.save();
+  //   return {
+  //     message: 'sucessful',
+  //     comments,
+  //   };
+  // }
+
+
+  
 
   // async save(payload: UserDto) {
   //   try{
