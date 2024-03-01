@@ -8,9 +8,9 @@ import { User, UserSchema } from '../schema/user.schema';
 import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';
 import { Chapter, ChapterSchema } from '../schema/chapters.schema';
-import { Features, FeaturesSchema } from '../schema/features.schema';
-import { Like, LikeSchema } from 'src/schema/like.schema';
+import { Comments, FeaturesSchema } from '../schema/comment.schema';
 import { Profile, ProfileSchema } from 'src/schema/profile.schema';
+// import { Comment,  } from 'src/schema/comment.schema';
 
 @Module({
   imports: [
@@ -18,11 +18,8 @@ import { Profile, ProfileSchema } from 'src/schema/profile.schema';
       { name: User.name, schema: UserSchema },
       { name: Books.name, schema: BookSchema },
       { name: Chapter.name, schema: ChapterSchema },
-      { name: Features.name, schema: FeaturesSchema },
-      // { name: Like.name, schema: LikeSchema}    
-      // { name: Likes.name, schema:Schema},
-      // { name: Comment.name, schema: CommentSchema},
-      { name: Profile.name, schema: ProfileSchema}
+      { name: Comments.name, schema: FeaturesSchema },
+      // { name: Comment.name, schema: CommentSchema },
     ]),
 
     // JwtModule.registerAsync({

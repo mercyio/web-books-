@@ -4,7 +4,7 @@ import { User } from './user.schema';
 import { Schema as MongooseSchema } from 'mongoose';
 import { Chapter } from './chapters.schema';
 import { Profile } from './profile.schema';
-import { Features } from './features.schema';
+import { Comments } from './comment.schema';
 
 export type BookDocument = HydratedDocument<Books>;
 @Schema()
@@ -33,11 +33,14 @@ export class Books {
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Chapter' }] })
   chapters: Chapter[];
 
-  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Features' }] })
+  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'User' }] })
+  bookmarks: User[];
+
+  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'User' }] })
   likes: User[];
 
-  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Comment' }] })
-  comments: Comment[];
+  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Comments' }] })
+  comments: Comments[];
 }
 
 export const BookSchema = SchemaFactory.createForClass(Books);

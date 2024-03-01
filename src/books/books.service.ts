@@ -20,8 +20,9 @@ import { ChapterDto } from 'src/dto/chapter.dto';
 import { Chapter } from 'src/schema/chapters.schema';
 import { ReadChapters } from 'src/dto/readChapters.dto';
 import { BookmarkDto } from 'src/dto/bookmark.dto';
-import { Features } from 'src/schema/features.schema';
+import { Comments } from 'src/schema/comment.schema';
 import { Profile } from 'src/schema/profile.schema';
+import { CommentDto } from 'src/dto/comment.dto';
 // import {  Like } from 'src/schema/like.schema';
 // import { Comment } from 'src/schema/comment.schema';
 
@@ -31,7 +32,8 @@ export class BookService {
     @InjectModel(Books.name) private bookModel: Model<Books>,
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(Chapter.name) private chapterModel: Model<Chapter>,
-    @InjectModel(Features.name) private featuresModel: Model<Features>,
+    @InjectModel(Comments.name) private commentsModel: Model<Comments>,
+    // @InjectModel(Comment.name) private commentModel: Model<Comment>,
     // @InjectModel (Profile.name) private profilemodel:Model<Profile>,
     // @InjectModel (Like.name) private likemodel:Model<Like>,
     // @InjectModel (Comment.name) private commentmodel:Model<Comment>,
@@ -172,11 +174,7 @@ export class BookService {
     return storyChapters;
   }
 
-  async addBookmark(
-    payload: BookmarkDto,
-    _id: string,
-    @Req() req: AuthenticatedRequest,
-  ) {
+  async addBookmark( bookId: string,@Req() req: AuthenticatedRequest) {
     // try {
     const users = req.user;
     const userId = users['_id'];
@@ -186,24 +184,45 @@ export class BookService {
       throw new NotFoundException('User not found');
     }
     console.log(user);
-
-    const book = await this.bookModel.findOne({ _id }).exec();
-    // if (!book) {
-    //     throw new UnauthorizedException('Book do not exists');
-    // }
-    console.log(book);
-
-    const existingBookmark = await this.featuresModel
-      .findOne({ payload, user_id: userId })
-      .exec();
-    if (existingBookmark) {
-      throw new UnauthorizedException('Bookmark already exists');
+    
+    const book = await this.bookModel.findOne({ _id:bookId}).exec();
+    if (!book) {
+      throw new UnauthorizedException('Book do not exists');
     }
-    console.log(existingBookmark);
+    // console.log(book);
 
-    const newBookmark = new this.featuresModel({ ...payload, user_id: userId });
-    console.log(newBookmark);
-    return await newBookmark.save();
+    const alreadyBookmarkedIndex = book.bookmarks.indexOf(userId);
+
+    console.log(alreadyBookmarkedIndex);
+
+    if (alreadyBookmarkedIndex === -1) {
+      book.bookmarks.push(userId);
+    } else {
+      book.bookmarks.splice(alreadyBookmarkedIndex, 1);
+    }
+    await book.save();
+
+    return {
+      message: 'Successful',
+      book,
+
+    // const book = await this.bookModel.findOne({ _id }).exec();
+    // // if (!book) {
+    // //     throw new UnauthorizedException('Book do not exists');
+    // // }
+    // console.log(book);
+
+    // const existingBookmark = await this.commentsModel
+    //   .findOne({ payload, user_id: userId })
+    //   .exec();
+    // if (existingBookmark) {
+    //   throw new UnauthorizedException('Bookmark already exists');
+    // }
+    // console.log(existingBookmark);
+
+    // const newBookmark = new this.commentsModel({ ...payload, user_id: userId });
+    // console.log(newBookmark);
+    // return await newBookmark.save();
 
     // } catch (error) {
     //     if (error.code === 11000 || error.name === 'MongoError') {
@@ -213,29 +232,12 @@ export class BookService {
     // }
     // }
   }
+  }
 
-  // async addBookmark(payload: BookmarkDto) {
-  //   const { userId, bookId } = payload;
-
-  //   const existingBookmark = await this.bookmarkModel.findOne({ userId, bookId }).exec();
-
-  //   if (existingBookmark) {
-  //     throw new NotFoundException('Bookmark already exists');
-  //   }
-
-  //   const newBookmark = new this.bookmarkModel(payload);
-  //   return newBookmark.save();
-  // }
-
-  async likes(
-    payload: BookmarkDto,
-    _id: string,
-    @Req() req: AuthenticatedRequest,
-  ) {
+  async likes( bookId: string, @Req() req: AuthenticatedRequest,) {
     // try {
     const users = req.user;
-    const userId = users['_id'];
-    const { book_id } = payload;
+    const userId = users['_id']
 
     const user = await this.userModel.findById(userId);
     if (!user) {
@@ -243,27 +245,26 @@ export class BookService {
     }
     // console.log(user);
 
-    const book = await this.bookModel.findOne({ _id: book_id }).exec();
+    const book = await this.bookModel.findOne({ _id: bookId }).exec();
     if (!book) {
       throw new UnauthorizedException('Book do not exists');
     }
     // console.log(book);
 
-
     const alreadyLikedIndex = book.likes.indexOf(userId);
-  
-    console.log(alreadyLikedIndex);
-    
-  if (alreadyLikedIndex === -1) {
-    book.likes.push(userId);
-  } else {
-    book.likes.splice(alreadyLikedIndex, 1);
-  }
-  await book.save();
 
-  return { 
-    message: 'Successful',
-     book 
+    console.log(alreadyLikedIndex);
+
+    if (alreadyLikedIndex === -1) {
+      book.likes.push(userId);
+    } else {
+      book.likes.splice(alreadyLikedIndex, 1);
+    }
+    await book.save();
+
+    return {
+      message: 'Successful',
+      book,
     };
 
     // const alreadyLiked = await this.featuresModel
@@ -291,57 +292,66 @@ export class BookService {
     // };
   }
 
+  async comments(bookId: string, @Req() req: AuthenticatedRequest) {
+    // try {
+    const users = req.user;
+    const userId = users['_id'];
+
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    console.log(user);
+
+    const book = await this.bookModel.findOne({ _id: bookId }).exec();
+    if (!book) {
+      throw new UnauthorizedException('Book do not exists');
+    }
+    console.log(book);
+
+    const comment = await this.commentsModel.create({
+      book_id: bookId,
+      user_id: userId,
+    });
+    book.comments = book.comments || [];
+    book.comments.push(comment);
+    await book.save();
+
+    return {
+      msg: 'sucessfull',
+      comment,
+    };
+  }
+
+
+  async deleteComment( bookId: string, commentId: string, @Req() req: AuthenticatedRequest,) {
+    // try {
+    const users = req.user;
+    const userId = users['_id'];
+
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    console.log(user);
+
+    const book = await this.bookModel.findOne({ _id: bookId }).exec();
+    if (!book) {
+      throw new UnauthorizedException('Book do not exists');
+    }
+    console.log(book);
+  const comment = await this.commentsModel.findOneAndDelete({_id: commentId})
+  
+  if(comment){
+   return 'sucessfull'
+  }
+
   
 
-  // async comments(
-  //   payload: BookmarkDto,
-  //   _id: string,
-  //   @Req() req: AuthenticatedRequest,
-  // ) {
-  //   // try {
-  //   const users = req.user;
-  //   const userId = users['_id'];
-  //   const { book_id } = payload;
-
-  //   const user = await this.userModel.findById(userId);
-  //   if (!user) {
-  //     throw new NotFoundException('User not found');
-  //   }
-  //   console.log(user);
-
-  //   const book = await this.bookModel.findOne({ _id: book_id }).exec();
-  //   if (!book) {
-  //     throw new UnauthorizedException('Book do not exists');
-  //   }
-  //   console.log(book);
-
-  //   // const alreadyLiked = await this.featuresModel
-  //   //   .findOneAndUpdate({ payload, user_id: userId })
-  //   //   .exec();
-  //   // if (alreadyLiked) {
-  //   //   return alreadyLiked;
-  //   // }
-
-  //   // console.log(alreadyLiked);
-
-  //   const comments = await this.featuresModel.create({
-  //     book_id,
-  //     user_id: userId,
-  //   });
-  //   book.comments = book.comments || [];
-  //   book.likes.push(comments);
-
-  //   console.log(comments);
-
-  //   await book.save();
-  //   return {
-  //     message: 'sucessful',
-  //     comments,
-  //   };
-  // }
-
-
-  
+    return {
+      msg: 'sucessfull'
+    };
+  }
 
   // async save(payload: UserDto) {
   //   try{

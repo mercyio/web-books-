@@ -9,6 +9,7 @@ import { ChapterDto } from 'src/dto/chapter.dto';
 import { ReadChapters } from 'src/dto/readChapters.dto';
 import { BookmarkDto } from 'src/dto/bookmark.dto';
 import { JwtAuthGuard } from 'src/guard/jwt.guard';
+import { CommentDto } from 'src/dto/comment.dto';
 
 @Controller('book')
 export class BookController {
@@ -26,23 +27,29 @@ export class BookController {
     return await this.bookService.PublishChapters(payload, _id);
   }
   
-  @Post('bookmark')
+  @Post('bookmark/:bookId')
   @UseGuards(JwtAuthGuard)
-  async bookmark(@Body() payload:BookmarkDto, _id:string,  @Req() req:AuthenticatedRequest){
-    return await this.bookService.addBookmark(payload ,_id, req)
+  async bookmark( @Param( 'bookId') bookId:string,  @Req() req:AuthenticatedRequest){
+    return await this.bookService.addBookmark(bookId, req)
   }
 
-  @Post('like')
+  @Post('like/:bookId')
   @UseGuards(JwtAuthGuard)
-  async like(@Body() payload:BookmarkDto, _id:string,  @Req() req:AuthenticatedRequest){
-    return await this.bookService.likes(payload ,_id, req)
+  async like( @Param( 'bookId') bookId:string,  @Req() req:AuthenticatedRequest){
+    return await this.bookService.likes( bookId, req)
   }
 
-  // @Post('comment')
-  // @UseGuards(JwtAuthGuard)
-  // async comment(@Body() payload:BookmarkDto, _id:string,  @Req() req:AuthenticatedRequest){
-  //   return await this.bookService.comment(payload ,_id, req)
-  // }
+  @Post('comment/:bookId')
+  @UseGuards(JwtAuthGuard)
+  async comment( @Param( 'bookId') bookId:string, @Req() req:AuthenticatedRequest){
+    return await this.bookService.comments( bookId, req)
+  }
+
+  @Post('comment/delete/:bookId/:commentId')
+  @UseGuards(JwtAuthGuard)
+  async deleteComment( @Param( 'bookId') bookId:string, commentId:string, @Req() req:AuthenticatedRequest){
+    return await this.bookService.deleteComment( bookId, commentId, req)
+  }
 
   @Get('find/:genre')
   @UseGuards(JwtAuthGuard)
@@ -53,7 +60,7 @@ export class BookController {
   
   @Get('books')
   @UseGuards(JwtAuthGuard)
-  async findAll() {
+  async findAll() {   
     return await this.bookService.allGenre();
   }
 

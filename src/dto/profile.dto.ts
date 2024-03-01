@@ -16,4 +16,8 @@ export class ProfileDto {
     @IsNotEmpty()
     @IsString()
     age : string
+
+    @IsNotEmpty()
+    @IsNumberString()
+    bio : string
 }
