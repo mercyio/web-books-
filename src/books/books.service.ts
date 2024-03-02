@@ -324,7 +324,7 @@ export class BookService {
   }
 
 
-  async deleteComment( bookId: string, commentId: string, @Req() req: AuthenticatedRequest,) {
+  async deleteComment( bookId: string, commentId:string, @Req() req: AuthenticatedRequest) {
     // try {
     const users = req.user;
     const userId = users['_id'];
@@ -333,25 +333,39 @@ export class BookService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    console.log(user);
+    // console.log(user);
 
     const book = await this.bookModel.findOne({ _id: bookId }).exec();
     if (!book) {
       throw new UnauthorizedException('Book do not exists');
     }
-    console.log(book);
-  const comment = await this.commentsModel.findOneAndDelete({_id: commentId})
-  
-  if(comment){
-   return 'sucessfull'
+    console.log(book); 
+  const comments = await this.commentsModel.findOneAndDelete({_id: commentId, user_id: userId, book_id: bookId }).exec();
+  console.log(comments);
+
+  if(!comments){
+   throw new NotFoundException('comment not found')
+  }
+  // const comment = await this.commentsModel.findOne({ book_id: bookId, user_id: userId, content: commentId });
+  // const comId = comment._id
+  // if (comment) {
+
+    // const commentIndex = book.comments.findIndex(comment => comment._id === commentId);
+    // if (commentIndex !== -1) {
+    //   book.comments.splice(commentIndex, 1);
+    //   await book.save();
+
+    // }
+  return 'Comment deleted successfully';
+
   }
 
-  
 
-    return {
-      msg: 'sucessfull'
-    };
-  }
+
+    // return {
+    //   msg: 'sucessfull'
+    // };
+  
 
   // async save(payload: UserDto) {
   //   try{

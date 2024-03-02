@@ -47,9 +47,16 @@ export class BookController {
 
   @Post('comment/delete/:bookId/:commentId')
   @UseGuards(JwtAuthGuard)
-  async deleteComment( @Param( 'bookId') bookId:string, commentId:string, @Req() req:AuthenticatedRequest){
-    return await this.bookService.deleteComment( bookId, commentId, req)
+  @Post('comment/delete/:bookId/:commentId')
+  @UseGuards(JwtAuthGuard)
+  async deleteComment(
+    @Param('bookId') bookId: string,
+    @Param('commentId') commentId: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return await this.bookService.deleteComment(bookId, commentId, req);
   }
+  
 
   @Get('find/:genre')
   @UseGuards(JwtAuthGuard)
