@@ -9,7 +9,8 @@ import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';
 import { Chapter, ChapterSchema } from '../schema/chapters.schema';
 import { Comments, FeaturesSchema } from '../schema/comment.schema';
-import { Profile, ProfileSchema } from 'src/schema/profile.schema';
+// import { Profile, ProfileSchema } from 'src/schema/profile.schema';
+import { Replies, RepliesSchema } from 'src/schema/reply.schema';
 // import { Comment,  } from 'src/schema/comment.schema';
 
 @Module({
@@ -19,6 +20,7 @@ import { Profile, ProfileSchema } from 'src/schema/profile.schema';
       { name: Books.name, schema: BookSchema },
       { name: Chapter.name, schema: ChapterSchema },
       { name: Comments.name, schema: FeaturesSchema },
+      { name: Replies.name, schema: RepliesSchema },
       // { name: Comment.name, schema: CommentSchema },
     ]),
 

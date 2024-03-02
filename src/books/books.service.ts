@@ -23,6 +23,8 @@ import { BookmarkDto } from 'src/dto/bookmark.dto';
 import { Comments } from 'src/schema/comment.schema';
 import { Profile } from 'src/schema/profile.schema';
 import { CommentDto } from 'src/dto/comment.dto';
+import { Replies } from 'src/schema/reply.schema';
+import { ReplyDto } from 'src/dto/reply.dto';
 // import {  Like } from 'src/schema/like.schema';
 // import { Comment } from 'src/schema/comment.schema';
 
@@ -33,6 +35,7 @@ export class BookService {
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(Chapter.name) private chapterModel: Model<Chapter>,
     @InjectModel(Comments.name) private commentsModel: Model<Comments>,
+    @InjectModel(Replies.name) private repliesModel: Model<Replies>,
     // @InjectModel(Comment.name) private commentModel: Model<Comment>,
     // @InjectModel (Profile.name) private profilemodel:Model<Profile>,
     // @InjectModel (Like.name) private likemodel:Model<Like>,
@@ -362,10 +365,59 @@ export class BookService {
 
 
 
-    // return {
-    //   msg: 'sucessfull'
-    // };
-  
+    async replyComment(bookId:string, commentId:string, payload:ReplyDto, @Req() req:AuthenticatedRequest){
+      const user = req.user
+      const userId = user['id']
+
+      const finduser = await this.userModel.findById(userId).exec()
+      if(!finduser){
+        throw new NotFoundException('user not found')
+      }
+     
+      const findbook = await this.bookModel.findOne({_id:bookId})
+      if(!findbook){
+        throw new NotFoundException('book not found')
+      }
+
+      const findcomment = await this.commentsModel.findOne({_id:commentId})
+      if(!findcomment){
+        throw new NotFoundException('comment not found')
+      }
+      
+      // let commentIndex = -1;
+      // for (let i = 0; i < findbook.comments.length; i++) {
+      //     if (findbook.comments[i]._id === commentId) {
+      //         commentIndex = i;
+      //         break;
+      //     }
+      // }
+      // console.log(findbook.comments);
+      const commentIndex = findbook.comments.findIndex(comment =>comment.user_id === userId && comment.content === payload.content); 
+      console.log(commentIndex);
+      
+      if (commentIndex === -1) {
+          throw new NotFoundException('Comment not found in the book');
+      }
+     
+      
+      const reply = await this.repliesModel.create({payload, book_id:bookId, user_id:userId, comment_id:commentId})
+      findcomment.replies = findcomment.replies || []
+      findcomment.replies.push(reply)
+      await  findcomment.save()
+   
+      findbook.comments[commentIndex].replies = findbook.comments[commentIndex].replies || [];
+      findbook.comments[commentIndex].replies.push(reply);
+      await findbook.save()
+
+      // console.log(findbook);
+      // console.log(comment);
+      
+      
+      return{
+        msg: 'sucessful',
+        result: reply
+      }
+    }
 
   // async save(payload: UserDto) {
   //   try{

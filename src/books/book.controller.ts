@@ -10,6 +10,7 @@ import { ReadChapters } from 'src/dto/readChapters.dto';
 import { BookmarkDto } from 'src/dto/bookmark.dto';
 import { JwtAuthGuard } from 'src/guard/jwt.guard';
 import { CommentDto } from 'src/dto/comment.dto';
+import { ReplyDto } from 'src/dto/reply.dto';
 
 @Controller('book')
 export class BookController {
@@ -45,8 +46,7 @@ export class BookController {
     return await this.bookService.comments( bookId, req)
   }
 
-  @Post('comment/delete/:bookId/:commentId')
-  @UseGuards(JwtAuthGuard)
+  
   @Post('comment/delete/:bookId/:commentId')
   @UseGuards(JwtAuthGuard)
   async deleteComment(
@@ -55,6 +55,18 @@ export class BookController {
     @Req() req: AuthenticatedRequest,
   ) {
     return await this.bookService.deleteComment(bookId, commentId, req);
+  }
+
+  
+  @Post('comment/reply/:bookId/:commentId')
+  @UseGuards(JwtAuthGuard)
+  async reply(
+    @Param('bookId') bookId: string,
+    @Param('commentId') commentId: string,
+    @Body() payload:ReplyDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return await this.bookService.replyComment(bookId, commentId, payload, req);
   }
   
 
