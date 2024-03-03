@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import {Request, Response}  from 'express';
 import { LoginDto } from 'src/dto/login.dto';
+import { Profile } from 'src/schema/profile.schema';
 
 
 
@@ -18,26 +19,56 @@ export class AuthService {
     @InjectModel (User.name) private userModel:Model<User>,
     private jwtService :JwtService,
    
-    // @InjectModel (User.name) private profileModel:Model<Profile>
+    @InjectModel (Profile.name) private profileModel:Model<Profile>
     ){}
  
-  async signup(payload:SignupDto ) {
-   payload.email = payload.email.toLowerCase()
-   const {email, password} =payload
-   const userEmail = await this.userModel.findOne({email})
-   if(userEmail){
-     throw new HttpException('EMAIL ALREADY EXIST', 400)
-   }
-  //  const repeatedName = await this.userModel.findOne({displayName})
-  //  if(repeatedName){
-  //    throw new HttpException('NAME ALREADY EXIST', 400)
-  //  }
-   const hashedPassword = await bcrypt.hash(password, 10) 
-   const user = await this.userModel.create({ email, password: hashedPassword})
-    user.save()
-    delete user.password
-    return user
+
+    async signup(payload: SignupDto) {
+      payload.email = payload.email.toLowerCase();
+      const { email, password } = payload;
+  
+      const username = email.split('@')[0];
+  
+      const userEmail = await this.userModel.findOne({ email });
+      if (userEmail) {
+          throw new HttpException('EMAIL ALREADY EXISTS', 400);
+      }
+  
+      const profile = await this.profileModel.findOne({ username });
+      if (profile) {
+          throw new HttpException('USERNAME ALREADY EXISTS', 400);
+      }
+  
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const user = await this.userModel.create({ email, password: hashedPassword });
+  
+      const userProfile = await this.profileModel.create({ userId: user._id, username });
+      const userp = await this.userModel.create({ user, profile: userProfile });
+
+      // user.save()
+      userp.save()
+      delete userp.password
+      return { userp, profile: userProfile };
   }
+
+  
+  // async signup(payload:SignupDto ) {
+  //  payload.email = payload.email.toLowerCase()
+  //  const {email, password} =payload
+  //  const userEmail = await this.userModel.findOne({email})
+  //  if(userEmail){
+  //    throw new HttpException('EMAIL ALREADY EXIST', 400)
+  //  }
+  // //  const repeatedName = await this.userModel.findOne({displayName})
+  // //  if(repeatedName){
+  // //    throw new HttpException('NAME ALREADY EXIST', 400)
+  // //  }
+  //  const hashedPassword = await bcrypt.hash(password, 10) 
+  //  const user = await this.userModel.create({ email, password: hashedPassword})
+  //   user.save()
+  //   delete user.password
+  //   return user
+  // }
 
 
 

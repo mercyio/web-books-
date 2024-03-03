@@ -13,11 +13,11 @@ import { Request } from 'express';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post('createprofile')
-  // @UseGuards(AuthGuard())
-  async create(@Body() payload: ProfileDto, @Req() req: AuthenticatedRequest) {
-    return await this.usersService.createProfile(payload, req);
-  } 
+  // @Post('createprofile')
+  // // @UseGuards(AuthGuard())
+  // async create(@Body() payload: ProfileDto, @Req() req: AuthenticatedRequest) {
+  //   return await this.usersService.createProfile(payload, req);
+  // } 
 
  @Post('updateProfile')
  @UseGuards(AuthGuard())

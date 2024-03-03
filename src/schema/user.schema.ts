@@ -18,14 +18,22 @@ export class User{
     @Prop()
     password : string
 
-    @Prop({ default: Date.now }) 
-    createdAt: Date;
 
     @Prop({ type:[{type: MongooseSchema.Types.ObjectId, ref: 'Books'}]})
     books: MongooseSchema.Types.ObjectId | Books[]
 
+    @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'User' }] })
+    followers: User[];
+
+    @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'User' }] })
+    following: User[];
+
+
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Profile'})
     profile: MongooseSchema.Types.ObjectId | Profile
+
+    @Prop({ default: Date.now }) 
+    createdAt: Date;
 
     // @OneToMany(() => Books, story => story.author_id)
     // story: Books;

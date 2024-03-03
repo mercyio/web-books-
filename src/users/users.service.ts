@@ -13,33 +13,33 @@ export class UsersService {
    @InjectModel (Profile.name) private profileModel:Model<Profile>,
    ){}
 
-  async createProfile(payload: ProfileDto, @Req() req:AuthenticatedRequest) {
-   //  try{
-      const user = req.user
-      const _id = user['_id'] 
+//   async createProfile(payload: ProfileDto, @Req() req:AuthenticatedRequest) {
+//    //  try{
+//       const user = req.user
+//       const _id = user['_id'] 
 
-      const finduser = await this.userModel.findById({_id})
-      if(!finduser){
-       throw new NotFoundException('user does not exist')
-      }
-      console.log(finduser);
+//       const finduser = await this.userModel.findById({_id})
+//       if(!finduser){
+//        throw new NotFoundException('user does not exist')
+//       }
+//       console.log(finduser);
       
 
-      if(user.profile){
-       throw new HttpException('profile already exist, update profile to make changes', 400)
-      }
-      // const user = finduser
-      const Profile = await this.profileModel.create({...payload, user_id: user})
-      finduser.profile = Profile
-      await finduser.save()
-      return{
-        msg: 'sucessfull',
-        result: Profile
-      }
-    }
-    catch(error){
-      return 'failed to create profile'
-    }
+//       if(user.profile){
+//        throw new HttpException('profile already exist, update profile to make changes', 400)
+//       }
+//       // const user = finduser
+//       const Profile = await this.profileModel.create({...payload, user_id: user})
+//       finduser.profile = Profile
+//       await finduser.save()
+//       return{
+//         msg: 'sucessfull',
+//         result: Profile
+//       }
+//     }
+//     catch(error){
+//       return 'failed to create profile'
+//     }
   
     async updateProfile(payload: ProfileDto, @Req() req:AuthenticatedRequest) {
 
@@ -106,6 +106,34 @@ export class UsersService {
     const users = await this.userModel.find()
     return users;
   }
+
+
+  async follow( @Req() req: AuthenticatedRequest,) {
+   // try {
+   const users = req.user;
+   const userId = users['_id']
+
+   const user = await this.userModel.findById(userId);
+   if (!user) {
+     throw new NotFoundException('User not found');
+   }
+   // console.log(user);
+
+   const alreadyfollowing = user.following.indexOf(userId);
+
+   console.log(alreadyfollowing);
+
+   if (alreadyfollowing === -1) {
+     user.following.push(userId);
+   } else {
+     user.following.splice(alreadyfollowing, 1);
+   }
+   await user.save();
+
+   return {
+     message: 'Successful',
+     user,
+   };
  
  
  
@@ -116,7 +144,7 @@ export class UsersService {
   
   }
   
-
+}
 
  
 

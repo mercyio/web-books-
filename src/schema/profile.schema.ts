@@ -9,7 +9,10 @@ import { Books } from "./books.schema";
 export type ProfileDocument = HydratedDocument<Profile>;
 @Schema()
 export class Profile{ 
-   @Prop()
+    @Prop()
+    username : string
+
+    @Prop()
     fullname : string
 
     @Prop()
@@ -20,18 +23,15 @@ export class Profile{
 
     @Prop()
     contact : string
+    
+    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User'})
+    userId: MongooseSchema.Types.ObjectId | User
 
     @Prop({ default: Date.now }) 
     createdAt: Date;
-    
-    // @OneToOne(() => User, user => user.profile)
-    // @JoinColumn({name: 'user_id'})
-    // user: User;
-    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User'})
-    user_id: MongooseSchema.Types.ObjectId | User
    
-    @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Books' }] })
-    books:  Books[];
+    // @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Books' }] })
+    // books:  Books[];
   
 }
 

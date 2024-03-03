@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
+import { Profile, ProfileSchema } from 'src/schema/profile.schema';
 
 // import { Comment, CommentSchema } from 'src/schema/comment.schema';
 
@@ -13,6 +14,7 @@ import { PassportModule } from '@nestjs/passport';
   imports: [
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema}, 
+      { name: Profile.name, schema: ProfileSchema}
     ]),
 
 

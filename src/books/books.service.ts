@@ -254,7 +254,7 @@ export class BookService {
     }
     // console.log(book);
 
-    const alreadyLikedIndex = book.likes.indexOf(userId);
+    const alreadyLikedIndex = book.likes.indexOf(userId); 
 
     console.log(alreadyLikedIndex);
 
