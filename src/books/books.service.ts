@@ -392,7 +392,7 @@ export class BookService {
       //     }
       // }
       // console.log(findbook.comments);
-      const commentIndex = findbook.comments.findIndex(comment =>comment.user_id === userId && comment.content === payload.content); 
+      const commentIndex = findbook.comments.findIndex(comment =>comment.user_id === userId && comment.comment === payload.content); 
       console.log(commentIndex);
       
       if (commentIndex === -1) {
@@ -411,7 +411,6 @@ export class BookService {
 
       // console.log(findbook);
       // console.log(comment);
-      
       
       return{
         msg: 'sucessful',

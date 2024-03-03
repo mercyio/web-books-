@@ -8,9 +8,11 @@ import { Replies } from "./reply.schema";
 export type Document = HydratedDocument<Comments>;
 @Schema()
 export class Comments{
+    @Prop()
+    ratings : string
 
     @Prop()
-    content : string
+    comment : string
 
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Books'})
     book_id: MongooseSchema.Types.ObjectId | Books
