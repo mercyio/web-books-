@@ -111,15 +111,15 @@ export class UsersService {
    const currentUser = req.user;
    const currentUserId = currentUser['_id'];
 
-   const user = await this.userModel.findById(currentUserId)
 
-   const userToBeFollowed = await this.userModel.findById(userToBeFollowedUserId);
+   let userToBeFollowed = await this.userModel.findOne({_id:userToBeFollowedUserId});
    if (!userToBeFollowed) {
        throw new NotFoundException('Target user not found');
    }
+//   console.log(userToBeFollowed);
 
-   const isFollowing = userToBeFollowed.followers.includes(currentUserId);
-
+const isFollowing = userToBeFollowed.followers.includes(currentUserId);
+   
    if (isFollowing) {
        const followerIndex = userToBeFollowed.followers.indexOf(currentUserId);
        userToBeFollowed.followers.splice(followerIndex, 1);
@@ -128,21 +128,35 @@ export class UsersService {
    }
 
    await userToBeFollowed.save();
+   // console.log(userToBeFollowed);
+   
+   const user = await this.userModel.findOne({_id:currentUserId})
+   const isFollowed = user.following.includes(userToBeFollowed);
+   console.log(isFollowed);
 
-   const isFollowingIndex = currentUser.following.indexOf(userToBeFollowed);
-   if (isFollowingIndex !== -1) {
-       currentUser.following.splice(isFollowingIndex, 1);
+   
+   if (isFollowed ) {
+      const isFollowedIndex = currentUser.following.indexOf(userToBeFollowed);  
+      user.following.slice(isFollowedIndex, 1);
+      console.log(isFollowedIndex);
+ 
+
    } else {
-       currentUser.following.push(userToBeFollowed);
+      user.following.push(userToBeFollowed);
+
    }
+  
+
 
    await user.save();
-
-   return {
-       message: isFollowing ? 'Unfollowed successfully' : 'Followed successfully',
+   // console.log(user);
+   
+    return {       
+       message: isFollowing ? 'Unfollowed successfully' : 'Followed successfully',       
        isFollowing: !isFollowing,
-       userToBeFollowed,
-   };
+       userToBeFollowed, 
+       user  
+       };
 }
 
 
