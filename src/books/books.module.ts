@@ -8,9 +8,10 @@ import { User, UserSchema } from '../schema/user.schema';
 import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';
 import { Chapter, ChapterSchema } from '../schema/chapters.schema';
-import { Comments, FeaturesSchema } from '../schema/comment.schema';
+import { RatingSchema, Ratings } from '../schema/ratings.schema';
 // import { Profile, ProfileSchema } from 'src/schema/profile.schema';
 import { Replies, RepliesSchema } from 'src/schema/reply.schema';
+import { Group, GroupSchema } from 'src/schema/group.schema';
 // import { Comment,  } from 'src/schema/comment.schema';
 
 @Module({
@@ -19,9 +20,10 @@ import { Replies, RepliesSchema } from 'src/schema/reply.schema';
       { name: User.name, schema: UserSchema },
       { name: Books.name, schema: BookSchema },
       { name: Chapter.name, schema: ChapterSchema },
-      { name: Comments.name, schema: FeaturesSchema },
+      { name: Ratings.name, schema: RatingSchema },
       { name: Replies.name, schema: RepliesSchema },
-      // { name: Comment.name, schema: CommentSchema },
+      { name: Group.name, schema: GroupSchema },
+
     ]),
 
     // JwtModule.registerAsync({

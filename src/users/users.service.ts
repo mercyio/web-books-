@@ -5,12 +5,15 @@ import { User } from 'src/schema/user.schema';
 import { Profile } from 'src/schema/profile.schema';
 import { ProfileDto } from 'src/dto/profile.dto';
 import { AuthenticatedRequest } from 'src/interface/user.interface';
+import { Group } from 'src/schema/group.schema';
 
 @Injectable()
 export class UsersService {
    constructor (
    @InjectModel (User.name) private userModel:Model<User>,
    @InjectModel (Profile.name) private profileModel:Model<Profile>,
+   @InjectModel (Group.name) private groupModel:Model<Group>,
+
    ){}
 
 //   async createProfile(payload: ProfileDto, @Req() req:AuthenticatedRequest) {
@@ -159,6 +162,19 @@ const isFollowing = userToBeFollowed.followers.includes(currentUserId);
        };
 }
 
+
+
+ async getGroup(groupId: string){
+   return await this.groupModel.findOne({_id:groupId});
+ }
+
+ async joinGroup(groupId: string, userId: string){
+   return this.groupModel.findByIdAndUpdate(groupId, { $addToSet: { members: userId } }, { new: true }).exec();
+ }
+
+ async leaveGroup(groupId: string, userId: string): Promise<Group> {
+   return this.groupModel.findByIdAndUpdate(groupId, { $pull: { members: userId } }, { new: true }).exec();
+ }
 
 }
 

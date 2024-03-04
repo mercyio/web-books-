@@ -20,23 +20,26 @@ import { ChapterDto } from 'src/dto/chapter.dto';
 import { Chapter } from 'src/schema/chapters.schema';
 import { ReadChapters } from 'src/dto/readChapters.dto';
 import { BookmarkDto } from 'src/dto/bookmark.dto';
-import { Comments } from 'src/schema/comment.schema';
 import { Profile } from 'src/schema/profile.schema';
 import { CommentDto } from 'src/dto/comment.dto';
 import { Replies } from 'src/schema/reply.schema';
 import { ReplyDto } from 'src/dto/reply.dto';
+import { Ratings } from 'src/schema/ratings.schema';
+import { UsersService } from 'src/users/users.service';
+import { Group } from 'src/schema/group.schema';
 // import {  Like } from 'src/schema/like.schema';
 // import { Comment } from 'src/schema/comment.schema';
 
 @Injectable()
 export class BookService {
   constructor(
+    private readonly userService: UsersService,
     @InjectModel(Books.name) private bookModel: Model<Books>,
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(Chapter.name) private chapterModel: Model<Chapter>,
-    @InjectModel(Comments.name) private commentsModel: Model<Comments>,
+    @InjectModel(Ratings.name) private ratingModel: Model<Ratings>,
     @InjectModel(Replies.name) private repliesModel: Model<Replies>,
-    // @InjectModel(Comment.name) private commentModel: Model<Comment>,
+    @InjectModel(Group.name) private groupModel: Model<Group>,
     // @InjectModel (Profile.name) private profilemodel:Model<Profile>,
     // @InjectModel (Like.name) private likemodel:Model<Like>,
     // @InjectModel (Comment.name) private commentmodel:Model<Comment>,
@@ -68,14 +71,21 @@ export class BookService {
     const author_id = finduser;
     const newBook = await this.bookModel.create({ ...payload, author_id });
 
+    const discussionGroup =await this.groupModel.create({ 
+      groupName: newBook.title, 
+      discription: 'Discussion group for ' + newBook.title, 
+      bookId: newBook._id });
+
     //  userProfile.books = userProfile.books || [];
     //  userProfile.books.push(newBook);
 
     //  await userProfile.save();
     newBook.save();
+
     return {
       message: 'sucessful',
       newBook,
+      discussionGroup
     };
 
     //   const newBook = new this.bookModel({
@@ -177,7 +187,7 @@ export class BookService {
     return storyChapters;
   }
 
-  async addBookmark( bookId: string,@Req() req: AuthenticatedRequest) {
+  async addBookmark(bookId: string, @Req() req: AuthenticatedRequest) {
     // try {
     const users = req.user;
     const userId = users['_id'];
@@ -187,8 +197,8 @@ export class BookService {
       throw new NotFoundException('User not found');
     }
     console.log(user);
-    
-    const book = await this.bookModel.findOne({ _id:bookId}).exec();
+
+    const book = await this.bookModel.findOne({ _id: bookId }).exec();
     if (!book) {
       throw new UnauthorizedException('Book do not exists');
     }
@@ -209,38 +219,38 @@ export class BookService {
       message: 'Successful',
       book,
 
-    // const book = await this.bookModel.findOne({ _id }).exec();
-    // // if (!book) {
-    // //     throw new UnauthorizedException('Book do not exists');
-    // // }
-    // console.log(book);
+      // const book = await this.bookModel.findOne({ _id }).exec();
+      // // if (!book) {
+      // //     throw new UnauthorizedException('Book do not exists');
+      // // }
+      // console.log(book);
 
-    // const existingBookmark = await this.commentsModel
-    //   .findOne({ payload, user_id: userId })
-    //   .exec();
-    // if (existingBookmark) {
-    //   throw new UnauthorizedException('Bookmark already exists');
-    // }
-    // console.log(existingBookmark);
+      // const existingBookmark = await this.commentsModel
+      //   .findOne({ payload, user_id: userId })
+      //   .exec();
+      // if (existingBookmark) {
+      //   throw new UnauthorizedException('Bookmark already exists');
+      // }
+      // console.log(existingBookmark);
 
-    // const newBookmark = new this.commentsModel({ ...payload, user_id: userId });
-    // console.log(newBookmark);
-    // return await newBookmark.save();
+      // const newBookmark = new this.commentsModel({ ...payload, user_id: userId });
+      // console.log(newBookmark);
+      // return await newBookmark.save();
 
-    // } catch (error) {
-    //     if (error.code === 11000 || error.name === 'MongoError') {
-    //         throw new ConflictException('Duplicate key error: Bookmark already exists');
-    //     } else {
-    //         throw new InternalServerErrorException('Failed to add bookmark');
-    // }
-    // }
+      // } catch (error) {
+      //     if (error.code === 11000 || error.name === 'MongoError') {
+      //         throw new ConflictException('Duplicate key error: Bookmark already exists');
+      //     } else {
+      //         throw new InternalServerErrorException('Failed to add bookmark');
+      // }
+      // }
+    };
   }
-  }
 
-  async likes( bookId: string, @Req() req: AuthenticatedRequest,) {
+  async likes(bookId: string, @Req() req: AuthenticatedRequest) {
     // try {
     const users = req.user;
-    const userId = users['_id']
+    const userId = users['_id'];
 
     const user = await this.userModel.findById(userId);
     if (!user) {
@@ -254,7 +264,7 @@ export class BookService {
     }
     // console.log(book);
 
-    const alreadyLikedIndex = book.likes.indexOf(userId); 
+    const alreadyLikedIndex = book.likes.indexOf(userId);
 
     console.log(alreadyLikedIndex);
 
@@ -312,12 +322,12 @@ export class BookService {
     }
     console.log(book);
 
-    const comment = await this.commentsModel.create({
+    const comment = await this.ratingModel.create({
       book_id: bookId,
       user_id: userId,
     });
-    book.comments = book.comments || [];
-    book.comments.push(comment);
+    book.ratings = book.ratings || [];
+    book.ratings.push(comment);
     await book.save();
 
     return {
@@ -326,8 +336,11 @@ export class BookService {
     };
   }
 
-
-  async deleteComment( bookId: string, commentId:string, @Req() req: AuthenticatedRequest) {
+  async deleteComment(
+    bookId: string,
+    commentId: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
     // try {
     const users = req.user;
     const userId = users['_id'];
@@ -342,16 +355,18 @@ export class BookService {
     if (!book) {
       throw new UnauthorizedException('Book do not exists');
     }
-    console.log(book); 
-  const comments = await this.commentsModel.findOneAndDelete({_id: commentId, user_id: userId, book_id: bookId }).exec();
-  console.log(comments);
+    console.log(book);
+    const comments = await this.ratingModel
+      .findOneAndDelete({ _id: commentId, user_id: userId, book_id: bookId })
+      .exec();
+    console.log(comments);
 
-  if(!comments){
-   throw new NotFoundException('comment not found')
-  }
-  // const comment = await this.commentsModel.findOne({ book_id: bookId, user_id: userId, content: commentId });
-  // const comId = comment._id
-  // if (comment) {
+    if (!comments) {
+      throw new NotFoundException('comment not found');
+    }
+    // const comment = await this.commentsModel.findOne({ book_id: bookId, user_id: userId, content: commentId });
+    // const comId = comment._id
+    // if (comment) {
 
     // const commentIndex = book.comments.findIndex(comment => comment._id === commentId);
     // if (commentIndex !== -1) {
@@ -359,64 +374,74 @@ export class BookService {
     //   await book.save();
 
     // }
-  return 'Comment deleted successfully';
-
+    return 'Comment deleted successfully';
   }
 
+  async replyComment(
+    bookId: string,
+    commentId: string,
+    payload: ReplyDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const user = req.user;
+    const userId = user['id'];
 
-
-    async replyComment(bookId:string, commentId:string, payload:ReplyDto, @Req() req:AuthenticatedRequest){
-      const user = req.user
-      const userId = user['id']
-
-      const finduser = await this.userModel.findById(userId).exec()
-      if(!finduser){
-        throw new NotFoundException('user not found')
-      }
-     
-      const findbook = await this.bookModel.findOne({_id:bookId})
-      if(!findbook){
-        throw new NotFoundException('book not found')
-      }
-
-      const findcomment = await this.commentsModel.findOne({_id:commentId})
-      if(!findcomment){
-        throw new NotFoundException('comment not found')
-      }
-      
-      // let commentIndex = -1;
-      // for (let i = 0; i < findbook.comments.length; i++) {
-      //     if (findbook.comments[i]._id === commentId) {
-      //         commentIndex = i;
-      //         break;
-      //     }
-      // }
-      // console.log(findbook.comments);
-      const commentIndex = findbook.comments.findIndex(comment =>comment.user_id === userId && comment.comment === payload.content); 
-      console.log(commentIndex);
-      
-      if (commentIndex === -1) {
-          throw new NotFoundException('Comment not found in the book');
-      }
-     
-      
-      const reply = await this.repliesModel.create({payload, book_id:bookId, user_id:userId, comment_id:commentId})
-      findcomment.replies = findcomment.replies || []
-      findcomment.replies.push(reply)
-      await  findcomment.save()
-   
-      findbook.comments[commentIndex].replies = findbook.comments[commentIndex].replies || [];
-      findbook.comments[commentIndex].replies.push(reply);
-      await findbook.save()
-
-      // console.log(findbook);
-      // console.log(comment);
-      
-      return{
-        msg: 'sucessful',
-        result: reply
-      }
+    const finduser = await this.userModel.findById(userId).exec();
+    if (!finduser) {
+      throw new NotFoundException('user not found');
     }
+
+    const findbook = await this.bookModel.findOne({ _id: bookId });
+    if (!findbook) {
+      throw new NotFoundException('book not found');
+    }
+
+    const findcomment = await this.ratingModel.findOne({ _id: commentId });
+    if (!findcomment) {
+      throw new NotFoundException('comment not found');
+    }
+
+    // let commentIndex = -1;
+    // for (let i = 0; i < findbook.comments.length; i++) {
+    //     if (findbook.comments[i]._id === commentId) {
+    //         commentIndex = i;
+    //         break;
+    //     }
+    // }
+    // console.log(findbook.comments);
+    const commentIndex = findbook.ratings.findIndex(
+      (comment) =>
+        comment.user_id === userId && comment.comment === payload.content,
+    );
+    console.log(commentIndex);
+
+    if (commentIndex === -1) {
+      throw new NotFoundException('Comment not found in the book');
+    }
+
+    const reply = await this.repliesModel.create({
+      payload,
+      book_id: bookId,
+      user_id: userId,
+      comment_id: commentId,
+    });
+    findcomment.replies = findcomment.replies || [];
+    findcomment.replies.push(reply);
+    await findcomment.save();
+
+    findbook.ratings[commentIndex].replies =
+      findbook.ratings[commentIndex].replies || [];
+    findbook.ratings[commentIndex].replies.push(reply);
+    await findbook.save();
+
+    // console.log(findbook);
+    // console.log(comment);
+
+    return {
+      msg: 'sucessful',
+      result: reply,
+    };
+  }
 
   // async save(payload: UserDto) {
   //   try{

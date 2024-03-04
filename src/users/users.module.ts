@@ -7,13 +7,16 @@ import { BookSchema, Books } from 'src/schema/books.schema';
 import { Profile, ProfileSchema } from 'src/schema/profile.schema';
 import { JwtStrategy } from 'src/strategy/jwt.strategy';
 import { AuthModule } from 'src/auth/auth.module';
+import { Group, GroupSchema } from 'src/schema/group.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema}, 
       { name: Books.name, schema: BookSchema}, 
-      { name: Profile.name, schema: ProfileSchema}
+      { name: Profile.name, schema: ProfileSchema},
+      { name: Group.name, schema: GroupSchema}
+
     ]),
 
 

@@ -5,9 +5,9 @@ import { Schema as MongooseSchema } from 'mongoose';
 import { Books } from "./books.schema";
 import { Replies } from "./reply.schema";
 
-export type Document = HydratedDocument<Comments>;
+export type Document = HydratedDocument<Ratings>;
 @Schema()
-export class Comments{
+export class Ratings{
     @Prop()
     ratings : string
 
@@ -27,4 +27,4 @@ export class Comments{
 
 }
 
-export const FeaturesSchema = SchemaFactory.createForClass(Comments)
+export const RatingSchema = SchemaFactory.createForClass(Ratings)

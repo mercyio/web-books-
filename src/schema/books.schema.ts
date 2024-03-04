@@ -3,8 +3,7 @@ import { HydratedDocument } from 'mongoose';
 import { User } from './user.schema';
 import { Schema as MongooseSchema } from 'mongoose';
 import { Chapter } from './chapters.schema';
-import { Profile } from './profile.schema';
-import { Comments } from './comment.schema';
+import { Ratings } from './ratings.schema';
 
 export type BookDocument = HydratedDocument<Books>;
 @Schema()
@@ -40,7 +39,7 @@ export class Books {
   likes: User[];
 
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Comments' }] })
-  comments: Comments[];
+  ratings: Ratings[];
 }
 
 export const BookSchema = SchemaFactory.createForClass(Books);
