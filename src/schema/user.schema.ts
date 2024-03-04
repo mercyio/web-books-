@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import mongoose, { HydratedDocument } from "mongoose";
 import { OneToMany, OneToOne } from "typeorm";
 import { Profile } from "./profile.schema";
 import { Books } from "./books.schema";
@@ -30,7 +30,7 @@ export class User{
 
 
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Profile'})
-    profile: MongooseSchema.Types.ObjectId | Profile
+    profileId: mongoose.Types.ObjectId| Profile
 
     @Prop({ default: Date.now }) 
     createdAt: Date;

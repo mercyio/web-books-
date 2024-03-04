@@ -52,7 +52,7 @@ export class UsersService {
          }
          console.log(finduser);
      
-     const update = await this.profileModel.findByIdAndUpdate( finduser.profile, payload, {new:true} )
+     const update = await this.profileModel.findByIdAndUpdate( finduser.profileId, payload, {new:true} )
    //   update.save()
      return{
       msg: 'sucessful',
@@ -107,44 +107,54 @@ export class UsersService {
     return users;
   }
 
+  async follow(userToBeFollowedUserId: string, @Req() req: AuthenticatedRequest) {
+   const currentUser = req.user;
+   const currentUserId = currentUser['_id'];
 
-  async follow( @Req() req: AuthenticatedRequest,) {
-   // try {
-   const users = req.user;
-   const userId = users['_id']
+   const user = await this.userModel.findById(currentUserId)
 
-   const user = await this.userModel.findById(userId);
-   if (!user) {
-     throw new NotFoundException('User not found');
+   const userToBeFollowed = await this.userModel.findById(userToBeFollowedUserId);
+   if (!userToBeFollowed) {
+       throw new NotFoundException('Target user not found');
    }
-   // console.log(user);
 
-   const alreadyfollowing = user.following.indexOf(userId);
+   const isFollowing = userToBeFollowed.followers.includes(currentUserId);
 
-   console.log(alreadyfollowing);
-
-   if (alreadyfollowing === -1) {
-     user.following.push(userId);
+   if (isFollowing) {
+       const followerIndex = userToBeFollowed.followers.indexOf(currentUserId);
+       userToBeFollowed.followers.splice(followerIndex, 1);
    } else {
-     user.following.splice(alreadyfollowing, 1);
+       userToBeFollowed.followers.push(currentUserId);
    }
+
+   await userToBeFollowed.save();
+
+   const isFollowingIndex = currentUser.following.indexOf(userToBeFollowed);
+   if (isFollowingIndex !== -1) {
+       currentUser.following.splice(isFollowingIndex, 1);
+   } else {
+       currentUser.following.push(userToBeFollowed);
+   }
+
    await user.save();
 
    return {
-     message: 'Successful',
-     user,
+       message: isFollowing ? 'Unfollowed successfully' : 'Followed successfully',
+       isFollowing: !isFollowing,
+       userToBeFollowed,
    };
- 
- 
- 
-
-  
-
- 
-  
-  }
-  
 }
+
+
+}
+
+  
+
+ 
+  
+  
+  
+
 
  
 

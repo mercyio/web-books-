@@ -1,6 +1,6 @@
 import { HttpException, Injectable, Req, Res, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { SignupDto } from 'src/dto/signup.dto';
 import { User } from 'src/schema/user.schema';
 import * as bcrypt from 'bcrypt';
@@ -41,14 +41,12 @@ export class AuthService {
   
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = await this.userModel.create({ email, password: hashedPassword });
-  
+       
       const userProfile = await this.profileModel.create({ userId: user._id, username });
-      const userp = await this.userModel.create({ user, profile: userProfile });
-
-      // user.save()
-      userp.save()
-      delete userp.password
-      return { userp, profile: userProfile };
+      user.profileId = userProfile._id 
+    
+  
+      return { user, profileId: userProfile };
   }
 
   

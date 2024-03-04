@@ -19,10 +19,16 @@ export class UsersController {
   //   return await this.usersService.createProfile(payload, req);
   // } 
 
- @Post('updateProfile')
+ @Patch('updateProfile')
  @UseGuards(AuthGuard())
  async update(@Body() payload:ProfileDto, @Req() req:AuthenticatedRequest){
   return await this.usersService.updateProfile(payload, req)
+ }
+
+ @Post('follow/:userToBeFollowedUserId')
+ @UseGuards(AuthGuard())
+ async followusers(userToBeFollowedUserId:string, @Req() req:AuthenticatedRequest){
+  return await this.usersService.follow( userToBeFollowedUserId, req)
  }
 
   // @Get()
