@@ -4,6 +4,7 @@ import { User } from './user.schema';
 import { Schema as MongooseSchema } from 'mongoose';
 import { Chapter } from './chapters.schema';
 import { Ratings } from './ratings.schema';
+import { Group } from './group.schema';
 
 export type BookDocument = HydratedDocument<Books>;
 @Schema()
@@ -40,6 +41,9 @@ export class Books {
 
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Comments' }] })
   ratings: Ratings[];
+
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Group' })
+  discussionRoom: MongooseSchema.Types.ObjectId | Group;
 }
 
 export const BookSchema = SchemaFactory.createForClass(Books);

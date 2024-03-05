@@ -136,16 +136,23 @@ const isFollowing = userToBeFollowed.followers.includes(currentUserId);
    const user = await this.userModel.findOne({_id:currentUserId})
    const isFollowed = user.following.includes(userToBeFollowed);
    console.log(isFollowed);
-
    
-   if (isFollowed ) {
-      const isFollowedIndex = currentUser.following.indexOf(userToBeFollowed);  
-      user.following.slice(isFollowedIndex, 1);
-      console.log(isFollowedIndex);
- 
+   // // const following = user.following.map((userToBeFollowed)=>userToBeFollowed)
+   // // const userToString = (following.toString())
+   // // const isFollowedIndex = user.following.indexOf(userToString);  
+   // const following = user.following; // No need to map, 'followed' is already an array
+
+
+// const FollowingIndex = userToBeFollowed.followers.includes(currentUserId);
+   const isFollowingIndex = user.following.findIndex((userToBeFollowed) => userToBeFollowed);
+   console.log(isFollowingIndex);
+     
+   if (isFollowingIndex === -1) {
+      user.following.push(userToBeFollowed);
 
    } else {
-      user.following.push(userToBeFollowed);
+      user.following.splice(isFollowingIndex, 1);
+
 
    }
   

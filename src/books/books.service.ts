@@ -76,6 +76,8 @@ export class BookService {
       discription: 'Discussion group for ' + newBook.title, 
       bookId: newBook._id });
 
+      
+
     //  userProfile.books = userProfile.books || [];
     //  userProfile.books.push(newBook);
 
